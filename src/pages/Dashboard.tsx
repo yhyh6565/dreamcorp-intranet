@@ -4,8 +4,11 @@ import { useUserStore } from '@/store/userStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Gift, Building2, Heart, LogOut, Bell, Mail, Calendar, MapPin, AlertTriangle } from 'lucide-react';
+import { Gift, Building2, Heart, LogOut, Bell, Mail, Calendar, MapPin, AlertTriangle, Cat, Archive } from 'lucide-react';
 import JumpscareOverlay from '@/components/JumpscareOverlay';
+import AnnexVisitModal from '@/components/modals/AnnexVisitModal';
+import FoxCounselingModal from '@/components/modals/FoxCounselingModal';
+import StorageRentalModal from '@/components/modals/StorageRentalModal';
 import { formatDate, getRelativeDate } from '@/utils/dateUtils';
 
 const Dashboard = () => {
@@ -13,7 +16,11 @@ const Dashboard = () => {
   const { userName, team, rank, points, isLoggedIn, logout, spamMessageDeleted } = useUserStore();
   const [showJumpscare, setShowJumpscare] = useState(false);
   const [pointsFlicker, setPointsFlicker] = useState(false);
+  const [showAnnexVisit, setShowAnnexVisit] = useState(false);
+  const [showFoxCounseling, setShowFoxCounseling] = useState(false);
+  const [showStorageRental, setShowStorageRental] = useState(false);
   const today = new Date();
+  const isSoleum = userName === '김솔음';
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -181,7 +188,7 @@ const Dashboard = () => {
               {/* Quick Menu */}
               <div>
                 <h4 className="text-sm font-medium text-muted-foreground mb-3">바로가기</h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className={`grid gap-2 ${isSoleum ? 'grid-cols-2' : 'grid-cols-2'}`}>
                   <Button 
                     variant="outline" 
                     className="flex flex-col h-auto py-4 gap-2"
@@ -190,14 +197,34 @@ const Dashboard = () => {
                     <Gift className="h-5 w-5 text-primary" />
                     <span className="text-xs">복지몰</span>
                   </Button>
-                  <Button variant="outline" className="flex flex-col h-auto py-4 gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-auto py-4 gap-2"
+                    onClick={() => setShowAnnexVisit(true)}
+                  >
                     <Building2 className="h-5 w-5 text-primary" />
                     <span className="text-xs">별관 방문</span>
                   </Button>
-                  <Button variant="outline" className="flex flex-col h-auto py-4 gap-2">
-                    <Heart className="h-5 w-5 text-primary" />
-                    <span className="text-xs">심리 상담</span>
-                  </Button>
+                  {isSoleum && (
+                    <>
+                      <Button 
+                        variant="outline" 
+                        className="flex flex-col h-auto py-4 gap-2"
+                        onClick={() => setShowFoxCounseling(true)}
+                      >
+                        <Cat className="h-5 w-5 text-primary" />
+                        <span className="text-xs">여우상담실</span>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="flex flex-col h-auto py-4 gap-2"
+                        onClick={() => setShowStorageRental(true)}
+                      >
+                        <Archive className="h-5 w-5 text-primary" />
+                        <span className="text-xs">대여창고 신청</span>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -235,6 +262,11 @@ const Dashboard = () => {
       {showJumpscare && (
         <JumpscareOverlay onComplete={() => setShowJumpscare(false)} />
       )}
+
+      {/* Modals */}
+      <AnnexVisitModal open={showAnnexVisit} onClose={() => setShowAnnexVisit(false)} />
+      <FoxCounselingModal open={showFoxCounseling} onClose={() => setShowFoxCounseling(false)} />
+      <StorageRentalModal open={showStorageRental} onClose={() => setShowStorageRental(false)} />
     </div>
   );
 };
