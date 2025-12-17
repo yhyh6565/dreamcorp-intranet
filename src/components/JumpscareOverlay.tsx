@@ -14,14 +14,14 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
     // Start typing "누구야?" after short silence
     const silenceTimer = setTimeout(() => setPhase('typing-nugoo'), 300);
     
-    // Transition to "죽어" phase after 4 seconds
-    const diePhaseTimer = setTimeout(() => setPhase('typing-die'), 4000);
+    // Transition to "죽어" phase after 5 seconds
+    const diePhaseTimer = setTimeout(() => setPhase('typing-die'), 5000);
     
-    // End after 8 seconds
+    // End after 10 seconds
     const endTimer = setTimeout(() => {
       setPhase('end');
       onComplete();
-    }, 8000);
+    }, 10000);
 
     return () => {
       clearTimeout(silenceTimer);
@@ -35,7 +35,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
     if (phase === 'typing-nugoo') {
       const fullText = '누구야? ';
       let charIndex = 0;
-      typingSpeedRef.current = 180;
+      typingSpeedRef.current = 25; // 7x faster (was 180)
       
       const startTyping = () => {
         intervalRef.current = setTimeout(() => {
@@ -45,7 +45,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
           if (charIndex >= fullText.length) {
             charIndex = 0;
             // Speed up gradually
-            typingSpeedRef.current = Math.max(40, typingSpeedRef.current - 15);
+            typingSpeedRef.current = Math.max(6, typingSpeedRef.current - 2);
           }
           
           if (phase === 'typing-nugoo') {
@@ -67,7 +67,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
     if (phase === 'typing-die') {
       const fullText = '죽어';
       let charIndex = 0;
-      typingSpeedRef.current = 80;
+      typingSpeedRef.current = 12; // 7x faster (was 80)
       
       const startTyping = () => {
         intervalRef.current = setTimeout(() => {
@@ -77,7 +77,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
           if (charIndex >= fullText.length) {
             charIndex = 0;
             // Speed up more aggressively
-            typingSpeedRef.current = Math.max(10, typingSpeedRef.current - 8);
+            typingSpeedRef.current = Math.max(2, typingSpeedRef.current - 1);
           }
           
           if (phase === 'typing-die') {
