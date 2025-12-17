@@ -117,8 +117,12 @@ const Dashboard = () => {
                   <Badge variant="outline" className="bg-muted text-muted-foreground">F급</Badge>
                   <span className="text-xs text-muted-foreground">상태: 안정</span>
                 </div>
-                <h3 className="font-semibold text-foreground">웅얼거리는 맨홀</h3>
-                <p className="text-sm text-muted-foreground">위치: 지하 2층</p>
+                <h3 className="font-semibold text-foreground">
+                  {isSoleum ? '양자택일' : '웅얼거리는 맨홀'}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {isSoleum ? '식별코드: Qterw-F-2073 / 위치: 별관' : '위치: 지하 2층'}
+                </p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <AlertTriangle className="h-3 w-3" />
                   <span>마지막 점검: {formatDate(getRelativeDate(-5))}</span>
