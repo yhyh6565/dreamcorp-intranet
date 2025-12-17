@@ -12,7 +12,6 @@ const MessageDetail = () => {
   const { userName, team, rank, deleteSpamMessage, corruptUserName } = useUserStore();
   
   // Easter egg states for spam message
-  const [showGlitch, setShowGlitch] = useState(false);
   const [showRetyping, setShowRetyping] = useState(false);
   const [retypedText, setRetypedText] = useState('');
   const [hideBackButton, setHideBackButton] = useState(false);
@@ -148,7 +147,7 @@ const MessageDetail = () => {
       title: '✨진.정.한 빛.을 찾으십.니까?✨',
       date: `${formatDate(getRelativeDate(-2))} 03:33`,
       content: (
-        <div className={showGlitch ? 'animate-glitch' : ''}>
+        <div>
           {/* Phase 1 - Polite */}
           <p className="mb-4">평안하십니까, 길 잃은 어린 양이여.</p>
           <p className="mb-4">당신이 오늘 내린 그 모든 &apos;선택&apos;이 정말 당신의 의지라 믿으십니까? 착각에서 깨어나십시오.</p>
@@ -223,8 +222,8 @@ const MessageDetail = () => {
           </Button>
         )}
 
-        <Card className={showGlitch ? 'animate-glitch' : ''}>
-          <CardHeader className={`border-b border-border space-y-3 ${showGlitch ? 'animate-glitch' : ''}`}>
+        <Card>
+          <CardHeader className="border-b border-border space-y-3">
             <div className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-primary" />
               <span className="text-lg font-semibold text-foreground">{message.title}</span>
