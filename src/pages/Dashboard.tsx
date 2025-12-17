@@ -4,8 +4,7 @@ import { useUserStore } from '@/store/userStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Gift, Building2, Heart, LogOut, Bell, Mail, Calendar, MapPin, AlertTriangle, Cat, Archive } from 'lucide-react';
-import JumpscareOverlay from '@/components/JumpscareOverlay';
+import { Gift, Building2, LogOut, Bell, Mail, Calendar, MapPin, AlertTriangle, Cat, Archive } from 'lucide-react';
 import AnnexVisitModal from '@/components/modals/AnnexVisitModal';
 import FoxCounselingModal from '@/components/modals/FoxCounselingModal';
 import StorageRentalModal from '@/components/modals/StorageRentalModal';
@@ -14,12 +13,10 @@ import { formatDate, getRelativeDate } from '@/utils/dateUtils';
 const Dashboard = () => {
   const navigate = useNavigate();
   const { userName, team, rank, points, isLoggedIn, logout, spamMessageDeleted } = useUserStore();
-  const [showJumpscare, setShowJumpscare] = useState(false);
   const [pointsFlicker, setPointsFlicker] = useState(false);
   const [showAnnexVisit, setShowAnnexVisit] = useState(false);
   const [showFoxCounseling, setShowFoxCounseling] = useState(false);
   const [showStorageRental, setShowStorageRental] = useState(false);
-  const today = new Date();
   const isSoleum = userName === '김솔음';
 
   useEffect(() => {
@@ -258,11 +255,6 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
-
-      {/* Horror Overlays */}
-      {showJumpscare && (
-        <JumpscareOverlay onComplete={() => setShowJumpscare(false)} />
-      )}
 
       {/* Modals */}
       <AnnexVisitModal open={showAnnexVisit} onClose={() => setShowAnnexVisit(false)} />
