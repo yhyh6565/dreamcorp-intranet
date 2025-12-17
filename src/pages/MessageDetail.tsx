@@ -12,10 +12,11 @@ const MessageDetail = () => {
   const { userName, team, rank, deleteSpamMessage } = useUserStore();
   
   // Easter egg states for spam message
-  const [hideBackButton, setHideBackButton] = useState(false);
   const [showGlitch, setShowGlitch] = useState(false);
-  const [showBlackout, setShowBlackout] = useState(false);
+  const [showPopups, setShowPopups] = useState(false);
+  const [popupCount, setPopupCount] = useState(0);
   const [hasTriggeredEasterEgg, setHasTriggeredEasterEgg] = useState(false);
+  const [canTriggerBackEasterEgg, setCanTriggerBackEasterEgg] = useState(false);
   const thankYouRef = useRef<HTMLParagraphElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -27,23 +28,16 @@ const MessageDetail = () => {
       (entries) => {
         if (entries[0].isIntersecting) {
           setHasTriggeredEasterEgg(true);
-          // 1. Hide back button immediately
-          setHideBackButton(true);
+          // Enable back button easter egg trigger
+          setCanTriggerBackEasterEgg(true);
           
-          // 2. After 5 seconds, show glitch effect
+          // After 5 seconds, show glitch effect
           setTimeout(() => {
             setShowGlitch(true);
             
-            // 3. After 2 seconds of glitch, show blackout
+            // After 2 seconds of glitch, stop glitch
             setTimeout(() => {
               setShowGlitch(false);
-              setShowBlackout(true);
-              
-              // 4. After 5 seconds of blackout, delete message and go to dashboard
-              setTimeout(() => {
-                deleteSpamMessage();
-                navigate('/dashboard');
-              }, 5000);
             }, 2000);
           }, 5000);
         }
@@ -56,7 +50,33 @@ const MessageDetail = () => {
     }
 
     return () => observer.disconnect();
-  }, [id, hasTriggeredEasterEgg, deleteSpamMessage, navigate]);
+  }, [id, hasTriggeredEasterEgg]);
+
+  // Popup animation effect
+  useEffect(() => {
+    if (showPopups && popupCount < 40) {
+      const timer = setTimeout(() => {
+        setPopupCount(prev => prev + 1);
+      }, 80);
+      return () => clearTimeout(timer);
+    } else if (showPopups && popupCount >= 40) {
+      // All popups shown, wait a moment then navigate
+      const timer = setTimeout(() => {
+        deleteSpamMessage();
+        navigate('/dashboard');
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [showPopups, popupCount, deleteSpamMessage, navigate]);
+
+  const handleBackClick = () => {
+    if (id === '2' && canTriggerBackEasterEgg) {
+      // Trigger popup easter egg
+      setShowPopups(true);
+    } else {
+      navigate('/messages');
+    }
+  };
 
   const messages: Record<string, {
     sender: string;
@@ -175,10 +195,34 @@ const MessageDetail = () => {
 
   const message = messages[id as keyof typeof messages];
 
-  // Blackout screen
-  if (showBlackout) {
+  // Popup explosion screen
+  if (showPopups) {
     return (
-      <div className="fixed inset-0 z-50 bg-black" />
+      <div className="fixed inset-0 z-50 bg-background overflow-hidden">
+        {Array.from({ length: popupCount }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute bg-card border-2 border-border shadow-lg p-4 rounded"
+            style={{
+              top: `${Math.random() * 80}%`,
+              left: `${Math.random() * 80}%`,
+              transform: `rotate(${Math.random() * 20 - 10}deg)`,
+              zIndex: 50 + i,
+              minWidth: '200px'
+            }}
+          >
+            <div className="flex items-center gap-2 border-b border-border pb-2 mb-2">
+              <div className="flex gap-1">
+                <div className="w-3 h-3 rounded-full bg-destructive" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+              </div>
+              <span className="text-xs text-muted-foreground">경고</span>
+            </div>
+            <p className="text-foreground font-bold text-center">도망칠 수 없습니다.</p>
+          </div>
+        ))}
+      </div>
     );
   }
 
@@ -193,16 +237,14 @@ const MessageDetail = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto">
-        {!hideBackButton && (
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/messages')}
-            className="mb-6"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            쪽지함
-          </Button>
-        )}
+        <Button 
+          variant="ghost" 
+          onClick={handleBackClick}
+          className="mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          쪽지함
+        </Button>
 
         <Card className={showGlitch ? 'animate-glitch' : ''}>
           <CardHeader className={`border-b border-border space-y-3 ${showGlitch ? 'animate-glitch' : ''}`}>
