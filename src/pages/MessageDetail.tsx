@@ -99,7 +99,7 @@ ${'고통이다. 고통이야. 고통. 고통. 고통. 고통이다.\n'.repeat(2
       if (retypeContainerRef.current) {
         retypeContainerRef.current.scrollTop = retypeContainerRef.current.scrollHeight;
       }
-    }, 1.5); // 3x faster than before (was ~5ms, now ~1.5ms)
+    }, 0.75); // 2x faster than before
 
     // After 10 seconds, navigate away and corrupt username
     const endTimer = setTimeout(() => {
@@ -291,7 +291,7 @@ ${'고통이다. 고통이야. 고통. 고통. 고통. 고통이다.\n'.repeat(2
             >
               {showRetyping ? (
                 <pre 
-                  className="break-all whitespace-pre-wrap font-mono text-2xl text-destructive leading-relaxed"
+                  className="break-all whitespace-pre-wrap font-mono text-base text-destructive leading-relaxed"
                   style={{ fontFamily: 'monospace' }}
                 >
                   {getReplacedContent()}
