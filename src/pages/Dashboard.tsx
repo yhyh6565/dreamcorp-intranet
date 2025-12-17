@@ -141,7 +141,12 @@ const Dashboard = () => {
 
               {/* Notices */}
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-3">공지사항</h4>
+                <h4 
+                  className="text-sm font-medium text-muted-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => navigate('/notices')}
+                >
+                  공지사항
+                </h4>
                 <ul className="space-y-2">
                   {notices.map((notice, index) => (
                     <li 
