@@ -44,6 +44,7 @@ export const useUserStore = create<UserState>()(
             userName: '김솔음',
             team: 'D조',
             rank: '주임',
+            points: 15400,
             isLoggedIn: true,
           });
         } else {
@@ -51,6 +52,7 @@ export const useUserStore = create<UserState>()(
             userName: id || '방문자',
             team: getRandomTeam(),
             rank: '사원',
+            points: 520,
             isLoggedIn: true,
           });
         }
