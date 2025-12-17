@@ -16,6 +16,8 @@ const MessageDetail = () => {
   const [replaceIndex, setReplaceIndex] = useState(0);
   const [hideBackButton, setHideBackButton] = useState(false);
   const [canTriggerBackEasterEgg, setCanTriggerBackEasterEgg] = useState(false);
+  const [showBlackScreen, setShowBlackScreen] = useState(false);
+  const [showFadeIn, setShowFadeIn] = useState(false);
   const thankYouRef = useRef<HTMLParagraphElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const retypeContainerRef = useRef<HTMLDivElement>(null);
@@ -101,12 +103,20 @@ ${'고통이다. 고통이야. 고통. 고통. 고통. 고통이다.\n'.repeat(2
       }
     }, 0.75); // 2x faster than before
 
-    // After 10 seconds, navigate away and corrupt username
+    // After 10 seconds, trigger black screen transition
     const endTimer = setTimeout(() => {
       clearInterval(typeInterval);
       deleteSpamMessage();
       corruptUserName();
-      navigate('/dashboard');
+      // Phase 1: Black screen
+      setShowBlackScreen(true);
+      // Phase 2: After 2 seconds, fade in to dashboard
+      setTimeout(() => {
+        setShowFadeIn(true);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 500); // Fade duration
+      }, 2000);
     }, totalDuration);
 
     return () => {
@@ -246,6 +256,15 @@ ${'고통이다. 고통이야. 고통. 고통. 고통. 고통이다.\n'.repeat(2
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">존재하지 않는 쪽지입니다.</p>
       </div>
+    );
+  }
+
+  // Black screen transition overlay
+  if (showBlackScreen) {
+    return (
+      <div 
+        className={`fixed inset-0 z-50 bg-black transition-opacity duration-500 ${showFadeIn ? 'opacity-0' : 'opacity-100'}`}
+      />
     );
   }
 
