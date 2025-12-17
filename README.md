@@ -1,73 +1,50 @@
-# Welcome to your Lovable project
+# 백일몽 주식회사 인트라넷 (Daydream Corp. Intranet)
 
-## Project info
+> **⚠ 저작권 및 2차 창작 안내 (Disclaimer)**
+>
+> 이 프로젝트는 **백덕수 작가님의 웹소설 '괴담에 떨어져도 출근을 해야 하는구나'**를 기반으로 제작된 팬 메이드(Fan-made) 작품입니다.
+>
+> 본 프로젝트는 **비영리적 목적**으로 제작되었으며, 원작의 저작권을 침해할 의도가 전혀 없음을 밝힙니다. 모든 세계관과 설정의 저작권은 원작자에게 있습니다.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+📚 **원작 보러가기 (KakaoPage):** [괴담에 떨어져도 출근을 해야 하는구나](https://page.kakao.com/content/65171279)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 📖 프로젝트 소개 (Overview)
 
-**Use Lovable**
+백일몽 주식회사(Daydream Corp.)의 임직원들이 사용하는 사내 인트라넷 시스템을 웹 환경으로 구현한 프로젝트입니다.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+일반적인 기업용 그룹웨어(ERP)의 건조하고 보수적인 UI/UX를 모방하여, 사용자가 실제 회사 시스템에 접속한 듯한 몰입감을 주도록 설계되었습니다.
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠 기술 스택 (Tech Stack)
 
-**Use your preferred IDE**
+이 프로젝트는 최신 웹 기술을 기반으로 빠르고 안정적인 SPA(Single Page Application)로 구축되었습니다.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+* **Core:** [React](https://react.dev/) (v18), [TypeScript](https://www.typescriptlang.org/)
+* **Build Tool:** [Vite](https://vitejs.dev/)
+* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+* **UI Components:** [shadcn/ui](https://ui.shadcn.com/) (based on Radix UI)
+* **State Management:** [Zustand](https://github.com/pmndrs/zustand)
+* **Icons:** [Lucide React](https://lucide.dev/)
+* **Package Manager:** Bun (or npm)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📂 프로젝트 구조 (Project Structure)
 
-Follow these steps:
+주요 디렉토리 및 파일 구성은 다음과 같습니다.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```text
+src/
+├── assets/             # 이미지 및 정적 리소스 (상품 이미지 등)
+├── components/         # 재사용 가능한 UI 컴포넌트
+│   ├── modals/         # 기능별 모달 (별관 방문, 상담 신청 등)
+│   └── ui/             # 버튼, 카드, 입력창 등 기본 디자인 시스템 컴포넌트
+├── pages/              # 주요 페이지 라우트
+│   ├── LoginGateway.tsx  # 진입(로그인) 페이지
+│   ├── Dashboard.tsx     # 메인 대시보드
+│   ├── MessageList.tsx   # 사내 메신저함
+│   ├── NoticeList.tsx    # 공지사항 게시판
+│   ├── WelfareMall.tsx   # 임직원 복지몰
+│   ├── CalendarPage.tsx  # 일정 캘린더
+│   └── FloorMap.tsx      # 사내 배치도
+├── store/              # 전역 상태 관리 (유저 세션 등)
+└── utils/              # 날짜 포맷팅 등 유틸리티 함수
