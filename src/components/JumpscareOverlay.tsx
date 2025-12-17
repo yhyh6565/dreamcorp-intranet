@@ -33,7 +33,22 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
   // Terminal phase logic
   useEffect(() => {
     if (phase === 'terminal') {
-      const lines = [
+      // Normal terminal logs first, then abnormal ones
+      const normalLines = [
+        '[root@cwg-cmdlog profile.d]# chmod +x cmd_logging.sh',
+        '[root@cwg-cmdlog profile.d]# ll',
+        'total 76',
+        '-rw-r--r--. 1 root root  771 Oct 31 2018 256term.csh',
+        '-rw-r--r--. 1 root root  841 Oct 31 2018 256term.sh',
+        '-rw-r--r--. 1 root root 1348 Nov 14 2018 abort-console-notification.sh',
+        '-rw-r--r--. 1 root root  660 Jun 10 2014 bash_completion.sh',
+        '-rwxr-xr-x. 1 root root  293 Mar 16 09:47 cmd_logging.sh',
+        '-rw-r--r--. 1 root root  196 Mar 25 2017 colorgrep.csh',
+        '-rw-r--r--. 1 root root  201 Mar 25 2017 colorgrep.sh',
+      ];
+      
+      const abnormalLines = [
+        '',
         '> SYSTEM ALERT: Unauthorized Access Detected.',
         '> User: Unknown',
         '> Location: Tracking...',
@@ -41,12 +56,16 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
         '> Microphone: ON'
       ];
       
+      const allLines = [...normalLines, ...abnormalLines];
       let lineIndex = 0;
+      
       const addLine = () => {
-        if (lineIndex < lines.length) {
-          setTerminalLines(prev => [...prev, lines[lineIndex]]);
+        if (lineIndex < allLines.length) {
+          setTerminalLines(prev => [...prev, allLines[lineIndex]]);
           lineIndex++;
-          setTimeout(addLine, 400);
+          // Faster for normal logs, slower for abnormal
+          const delay = lineIndex <= normalLines.length ? 80 : 400;
+          setTimeout(addLine, delay);
         }
       };
       addLine();
@@ -152,15 +171,17 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
         </div>
 
         {/* Terminal content */}
-        <div className="p-8 pt-16">
-          <div className="text-green-500 text-sm md:text-base space-y-2">
+        <div className="p-4 pt-12">
+          <div className="text-green-500 text-xs md:text-sm space-y-0.5 text-left">
             {terminalLines.map((line, index) => (
-              <p key={index} className="font-mono">
+              <p key={index} className="font-mono whitespace-pre">
                 {line === '> Location: Tracking...' && trackingBlinking ? (
                   <>
                     {'> Location: '}
                     <span className="animate-pulse">Tracking...</span>
                   </>
+                ) : line.startsWith('>') ? (
+                  <span className="text-red-400">{line}</span>
                 ) : (
                   line
                 )}

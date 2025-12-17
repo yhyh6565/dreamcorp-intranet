@@ -195,36 +195,13 @@ const MessageDetail = () => {
 
   const message = messages[id as keyof typeof messages];
 
-  // Popup explosion screen
-  if (showPopups) {
-    return (
-      <div className="fixed inset-0 z-50 bg-background overflow-hidden">
-        {Array.from({ length: popupCount }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-card border-2 border-border shadow-lg p-4 rounded"
-            style={{
-              top: `${Math.random() * 80}%`,
-              left: `${Math.random() * 80}%`,
-              transform: `rotate(${Math.random() * 20 - 10}deg)`,
-              zIndex: 50 + i,
-              minWidth: '200px'
-            }}
-          >
-            <div className="flex items-center gap-2 border-b border-border pb-2 mb-2">
-              <div className="flex gap-1">
-                <div className="w-3 h-3 rounded-full bg-destructive" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-              </div>
-              <span className="text-xs text-muted-foreground">경고</span>
-            </div>
-            <p className="text-foreground font-bold text-center">도망칠 수 없습니다.</p>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  // Generate stable popup positions once
+  const popupPositions = useRef(
+    Array.from({ length: 40 }).map((_, i) => ({
+      top: 5 + (i % 8) * 10 + Math.random() * 5,
+      left: 5 + (i % 6) * 12 + Math.random() * 8,
+    }))
+  ).current;
 
   if (!message) {
     return (
@@ -235,7 +212,7 @@ const MessageDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-6 relative">
       <div className="max-w-4xl mx-auto">
         <Button 
           variant="ghost" 
@@ -274,6 +251,49 @@ const MessageDetail = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Windows-style popup overlays - appears on top of message content */}
+      {showPopups && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          {Array.from({ length: popupCount }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute shadow-[4px_4px_0px_rgba(0,0,0,0.3)]"
+              style={{
+                top: `${popupPositions[i].top}%`,
+                left: `${popupPositions[i].left}%`,
+                zIndex: 50 + i,
+                width: '280px',
+              }}
+            >
+              {/* Windows-style title bar */}
+              <div 
+                className="px-2 py-1 flex items-center justify-between"
+                style={{ background: 'linear-gradient(180deg, #000080 0%, #1084d0 100%)' }}
+              >
+                <span className="text-white text-xs font-bold">System message</span>
+                <button className="w-4 h-4 bg-[#c0c0c0] border border-t-white border-l-white border-r-[#808080] border-b-[#808080] text-xs flex items-center justify-center">
+                  ✕
+                </button>
+              </div>
+              {/* Content area */}
+              <div className="bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080] p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+                    ✕
+                  </div>
+                  <span className="text-black font-bold">도망칠 수 없습니다.</span>
+                </div>
+                <div className="flex justify-center">
+                  <button className="px-6 py-1 bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080] text-black text-sm font-bold">
+                    Ok
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
