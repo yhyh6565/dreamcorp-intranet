@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from 'react';
 const MessageDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { userName, team, rank, deleteSpamMessage } = useUserStore();
+  const { userName, team, rank, deleteSpamMessage, corruptUserName } = useUserStore();
   
   // Easter egg states for spam message
   const [showGlitch, setShowGlitch] = useState(false);
@@ -21,7 +21,8 @@ const MessageDetail = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const retypeContainerRef = useRef<HTMLDivElement>(null);
 
-  const retypeMessage = '우리 모두는 한낱 이야기에 불과하다 위대하신 이름님 ';
+  // Unicode escape sequence format
+  const retypeMessage = '\\uc6b0\\ub9ac \\ubaa8\\ub450\\ub294 \\ud55c\\ub0b1 \\uc774\\uc57c\\uae30\\uc5d0 \\ubd88\\uacfc\\ud558\\ub2e4 \\uc704\\ub300\\ud558\\uc2e0 \\uc774\\ub984\\ub2d8 ';
 
   // Check if "감사합니다" is visible
   useEffect(() => {
@@ -43,28 +44,28 @@ const MessageDetail = () => {
     return () => observer.disconnect();
   }, [id, canTriggerBackEasterEgg]);
 
-  // Retyping effect
+  // Retyping effect - pushes original content up
   useEffect(() => {
     if (!showRetyping) return;
 
     let charIndex = 0;
     const totalDuration = 10000; // 10 seconds
-    const charsNeeded = Math.ceil(totalDuration / 15); // Very fast typing
     
     const typeInterval = setInterval(() => {
       setRetypedText(prev => prev + retypeMessage[charIndex % retypeMessage.length]);
       charIndex++;
       
-      // Auto scroll
+      // Auto scroll to bottom
       if (retypeContainerRef.current) {
         retypeContainerRef.current.scrollTop = retypeContainerRef.current.scrollHeight;
       }
-    }, 15);
+    }, 5); // 3x faster (was 15ms)
 
-    // After 10 seconds, navigate away
+    // After 10 seconds, navigate away and corrupt username
     const endTimer = setTimeout(() => {
       clearInterval(typeInterval);
       deleteSpamMessage();
+      corruptUserName();
       navigate('/dashboard');
     }, totalDuration);
 
@@ -72,7 +73,7 @@ const MessageDetail = () => {
       clearInterval(typeInterval);
       clearTimeout(endTimer);
     };
-  }, [showRetyping, deleteSpamMessage, navigate]);
+  }, [showRetyping, deleteSpamMessage, corruptUserName, navigate]);
 
   const handleBackClick = () => {
     if (id === '2' && canTriggerBackEasterEgg) {
@@ -244,21 +245,24 @@ const MessageDetail = () => {
             </div>
           </CardHeader>
           <CardContent ref={contentRef} className="pt-6">
-            {showRetyping ? (
-              <div 
-                ref={retypeContainerRef}
-                className="text-foreground leading-relaxed max-h-[60vh] overflow-y-auto"
-              >
-                <p className="break-all whitespace-pre-wrap">
-                  {retypedText}
-                  <span className="animate-blink">|</span>
-                </p>
-              </div>
-            ) : (
-              <div className="text-foreground leading-relaxed">
-                {message.content}
-              </div>
-            )}
+            <div 
+              ref={retypeContainerRef}
+              className="text-foreground leading-relaxed max-h-[60vh] overflow-y-auto"
+            >
+              {showRetyping ? (
+                <>
+                  {/* Original content being pushed up */}
+                  {message.content}
+                  {/* New retyped content pushing from below */}
+                  <p className="break-all whitespace-pre-wrap mt-4 font-mono text-sm text-destructive">
+                    {retypedText}
+                    <span className="animate-blink">|</span>
+                  </p>
+                </>
+              ) : (
+                message.content
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>

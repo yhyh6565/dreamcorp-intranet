@@ -18,6 +18,7 @@ interface UserState {
   incrementBackButton: () => void;
   resetBackButton: () => void;
   deleteSpamMessage: () => void;
+  corruptUserName: () => void;
 }
 
 const getRandomTeam = () => {
@@ -89,6 +90,10 @@ export const useUserStore = create<UserState>()(
 
       deleteSpamMessage: () => {
         set({ spamMessageDeleted: true });
+      },
+
+      corruptUserName: () => {
+        set({ userName: '■■■' });
       },
     }),
     {
