@@ -196,12 +196,17 @@ const Dashboard = () => {
 
               {/* Messages */}
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-3">쪽지함</h4>
+                <h4 
+                  className="text-sm font-medium text-muted-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => navigate('/messages')}
+                >
+                  쪽지함
+                </h4>
                 <ul className="space-y-2">
                   {messages.map((message, index) => (
                     <li 
                       key={index}
-                      onClick={message.isSpam ? handleSpamClick : undefined}
+                      onClick={message.isSpam ? handleSpamClick : () => navigate(`/messages/${index + 1}`)}
                       className={`p-3 rounded-md border border-border hover:bg-secondary/50 cursor-pointer transition-colors ${
                         message.isSpam ? 'hover:border-destructive/30' : ''
                       }`}

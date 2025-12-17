@@ -241,18 +241,100 @@ const FloorMap = () => {
         </div>
 
         {/* Floor Plan */}
-        <div className="relative bg-secondary/20 rounded-xl border border-border aspect-video overflow-hidden">
-          {/* Grid Background */}
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: 'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
-            backgroundSize: '40px 40px'
+        <div className="relative bg-secondary/10 rounded-xl border-2 border-border aspect-video overflow-hidden">
+          {/* Blueprint Grid Background */}
+          <div className="absolute inset-0 opacity-30" style={{
+            backgroundImage: `
+              linear-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, hsl(var(--primary) / 0.3) 1px, transparent 1px),
+              linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '100px 100px, 100px 100px, 20px 20px, 20px 20px'
           }} />
 
-          {/* Floor Layout Mockup */}
-          <div className="absolute inset-8 border-2 border-dashed border-border rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-4xl font-bold text-muted-foreground/30 font-horror">{selectedFloor.id}</p>
-              <p className="text-sm text-muted-foreground mt-2">{selectedFloor.type}</p>
+          {/* Building Outer Wall */}
+          <div className="absolute inset-4 border-4 border-primary/60 bg-background/50">
+            {/* Floor Label */}
+            <div className="absolute -top-3 left-4 bg-background px-2 text-xs font-bold text-primary">
+              {selectedFloor.id} - {selectedFloor.type}
+            </div>
+
+            {/* Main Corridor - Horizontal */}
+            <div className="absolute top-1/2 left-0 right-0 h-12 -translate-y-1/2 bg-secondary/40 border-y border-primary/30">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-[10px] text-muted-foreground tracking-widest">복 도</span>
+              </div>
+            </div>
+
+            {/* Left Wing Rooms */}
+            <div className="absolute top-4 left-4 w-[30%] h-[35%] border-2 border-primary/40 bg-secondary/20 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">사무실 A</p>
+                <p className="text-[10px] text-muted-foreground/60">Office A</p>
+              </div>
+              {/* Door */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary/60"></div>
+            </div>
+
+            <div className="absolute bottom-4 left-4 w-[30%] h-[35%] border-2 border-primary/40 bg-secondary/20 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">사무실 B</p>
+                <p className="text-[10px] text-muted-foreground/60">Office B</p>
+              </div>
+              {/* Door */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary/60"></div>
+            </div>
+
+            {/* Center Area */}
+            <div className="absolute top-4 left-[38%] w-[24%] h-[35%] border-2 border-primary/40 bg-secondary/20 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">회의실</p>
+                <p className="text-[10px] text-muted-foreground/60">Meeting Room</p>
+              </div>
+              <div className="absolute bottom-0 right-4 w-6 h-1 bg-primary/60"></div>
+            </div>
+
+            <div className="absolute bottom-4 left-[38%] w-[24%] h-[35%] border-2 border-primary/40 bg-secondary/20 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">휴게실</p>
+                <p className="text-[10px] text-muted-foreground/60">Break Room</p>
+              </div>
+              <div className="absolute top-0 right-4 w-6 h-1 bg-primary/60"></div>
+            </div>
+
+            {/* Right Wing Rooms */}
+            <div className="absolute top-4 right-4 w-[30%] h-[35%] border-2 border-primary/40 bg-secondary/20 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">관리실</p>
+                <p className="text-[10px] text-muted-foreground/60">Control Room</p>
+              </div>
+              <div className="absolute bottom-0 left-4 w-6 h-1 bg-primary/60"></div>
+            </div>
+
+            <div className="absolute bottom-4 right-4 w-[30%] h-[35%] border-2 border-primary/40 bg-secondary/20 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">창고</p>
+                <p className="text-[10px] text-muted-foreground/60">Storage</p>
+              </div>
+              <div className="absolute top-0 left-4 w-6 h-1 bg-primary/60"></div>
+            </div>
+
+            {/* Elevator / Stairs Area */}
+            <div className="absolute top-1/2 right-2 -translate-y-1/2 w-8 h-16 border-2 border-dashed border-primary/40 bg-primary/10 flex items-center justify-center">
+              <span className="text-[8px] text-primary/60 writing-vertical">EV</span>
+            </div>
+
+            {/* Compass */}
+            <div className="absolute bottom-2 right-2 w-8 h-8 border border-primary/40 rounded-full flex items-center justify-center bg-background/80">
+              <span className="text-[8px] font-bold text-primary">N</span>
+              <div className="absolute top-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[3px] border-r-[3px] border-b-[6px] border-l-transparent border-r-transparent border-b-primary/60"></div>
+            </div>
+
+            {/* Scale */}
+            <div className="absolute bottom-2 left-2 flex items-center gap-1">
+              <div className="w-12 h-1 bg-primary/40"></div>
+              <span className="text-[8px] text-muted-foreground">10m</span>
             </div>
           </div>
 
@@ -261,9 +343,9 @@ const FloorMap = () => {
             <Tooltip key={marker.id}>
               <TooltipTrigger asChild>
                 <button
-                  className={`absolute w-6 h-6 rounded-full ${getStatusColor(marker.status)} 
+                  className={`absolute w-7 h-7 rounded-full ${getStatusColor(marker.status)} 
                     animate-pulse cursor-pointer hover:scale-125 transition-transform
-                    flex items-center justify-center`}
+                    flex items-center justify-center shadow-lg border-2 border-white/50`}
                   style={{ left: `${marker.x}%`, top: `${marker.y}%`, transform: 'translate(-50%, -50%)' }}
                   onMouseEnter={() => setHoveredMarker(marker.id)}
                   onMouseLeave={() => setHoveredMarker(null)}
@@ -273,10 +355,10 @@ const FloorMap = () => {
                     }
                   }}
                 >
-                  <span className="text-xs font-bold text-white">!</span>
+                  <span className="text-xs font-bold text-white drop-shadow">!</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right" className="max-w-xs">
+              <TooltipContent side="right" className="max-w-xs bg-card border-primary/30">
                 <div className="space-y-1">
                   <p className="font-semibold text-foreground">{marker.assignee}</p>
                   <p className="text-sm text-muted-foreground">관리 대상: {marker.target}</p>
