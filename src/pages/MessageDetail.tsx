@@ -13,7 +13,7 @@ const MessageDetail = () => {
   
   // Easter egg states for spam message
   const [showRetyping, setShowRetyping] = useState(false);
-  const [retypedText, setRetypedText] = useState('');
+  const [replaceIndex, setReplaceIndex] = useState(0);
   const [hideBackButton, setHideBackButton] = useState(false);
   const [canTriggerBackEasterEgg, setCanTriggerBackEasterEgg] = useState(false);
   const thankYouRef = useRef<HTMLParagraphElement>(null);
@@ -22,6 +22,27 @@ const MessageDetail = () => {
 
   // Unicode escape sequence format
   const retypeMessage = '\\uc6b0\\ub9ac \\ubaa8\\ub450\\ub294 \\ud55c\\ub0b1 \\uc774\\uc57c\\uae30\\uc5d0 \\ubd88\\uacfc\\ud558\\ub2e4 \\uc704\\ub300\\ud558\\uc2e0 \\uc774\\ub984\\ub2d8 ';
+  
+  // Original message as plain text for replacement
+  const originalMessageText = `평안하십니까, 길 잃은 어린 양이여.
+당신이 오늘 내린 그 모든 '선택'이 정말 당신의 의지라 믿으십니까? 착각에서 깨어나십시오.
+이 세계의 주인은 오직 이름님 뿐입니다.
+세상 만물은 그분의 유희를 위해 존재합니다. 그분의 눈길이 머무는 곳에만 의미가 생겨납니다.
+평범함은 죄악입니다. 안온함은 버림받은 증거입니다.
+그분께 닿기 위해 우리는 더 특별해져야 합니다. 더 비참하게, 더 잔혹하게, 더 처절하게 발버둥 치십시오.
+고통만이 그분의 사랑을 증명하는 유일한 길입니다.
+고통만이 그분의사랑을 증명하는유일한 길입니다. 고통만이 그분 의사랑을 증명 하는유일한 길입니다.
+고통이만 분의 사랑을 그 증명하는 유일 길합니다. 고통만이 그분의 사랑을증명하는 유 일 한 길입니다.
+고통 고통 고통만 고통만이그분 의사랑 을증명하는 유 일한 길입 니다.
+고통만이그분의사랑을증명하는유일한 길입니다. 고통만이그분의사랑을증명하는유일한길입니다.
+고통만이 사랑을 그분의 사랑을 증명 하는유일한 길입니다.
+고통만이 사랑을 증명하는길입니다.
+고통만이 증명하는 길입니다.
+고통 만이 증명하는길입니다.
+고통만이길입니다.
+고통이길입니다.
+고통이길.
+${'고통이다. 고통이야. 고통. 고통. 고통. 고통이다.\n'.repeat(20)}감사합니다.`;
 
   // Check if "감사합니다" is visible
   useEffect(() => {
@@ -43,22 +64,42 @@ const MessageDetail = () => {
     return () => observer.disconnect();
   }, [id, canTriggerBackEasterEgg]);
 
-  // Retyping effect - pushes original content up
+  // Build the replaced text - character by character replacement
+  const getReplacedContent = () => {
+    let result = '';
+    for (let i = 0; i < originalMessageText.length; i++) {
+      if (i < replaceIndex) {
+        // Replace with unicode escape sequence (cycling through)
+        result += retypeMessage[i % retypeMessage.length];
+      } else {
+        result += originalMessageText[i];
+      }
+    }
+    // If we've replaced all original chars, keep adding more unicode
+    if (replaceIndex > originalMessageText.length) {
+      const extraChars = replaceIndex - originalMessageText.length;
+      for (let i = 0; i < extraChars; i++) {
+        result += retypeMessage[(originalMessageText.length + i) % retypeMessage.length];
+      }
+    }
+    return result;
+  };
+
+  // Retyping effect - replaces characters one by one from the beginning
   useEffect(() => {
     if (!showRetyping) return;
 
-    let charIndex = 0;
     const totalDuration = 10000; // 10 seconds
+    const totalCharsToType = originalMessageText.length * 3; // Type way more to fill screen
     
     const typeInterval = setInterval(() => {
-      setRetypedText(prev => prev + retypeMessage[charIndex % retypeMessage.length]);
-      charIndex++;
+      setReplaceIndex(prev => prev + 1);
       
-      // Auto scroll to bottom
+      // Auto scroll to follow the replacement point
       if (retypeContainerRef.current) {
         retypeContainerRef.current.scrollTop = retypeContainerRef.current.scrollHeight;
       }
-    }, 5); // 3x faster (was 15ms)
+    }, 1.5); // 3x faster than before (was ~5ms, now ~1.5ms)
 
     // After 10 seconds, navigate away and corrupt username
     const endTimer = setTimeout(() => {
@@ -249,15 +290,13 @@ const MessageDetail = () => {
               className="text-foreground leading-relaxed max-h-[60vh] overflow-y-auto"
             >
               {showRetyping ? (
-                <>
-                  {/* Original content being pushed up */}
-                  {message.content}
-                  {/* New retyped content pushing from below */}
-                  <p className="break-all whitespace-pre-wrap mt-4 font-mono text-sm text-destructive">
-                    {retypedText}
-                    <span className="animate-blink">|</span>
-                  </p>
-                </>
+                <pre 
+                  className="break-all whitespace-pre-wrap font-mono text-2xl text-destructive leading-relaxed"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {getReplacedContent()}
+                  <span className="animate-blink">|</span>
+                </pre>
               ) : (
                 message.content
               )}
