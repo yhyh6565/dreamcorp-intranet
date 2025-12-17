@@ -1,76 +1,115 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import Layout from '@/components/Layout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatDate, getRelativeDate } from '@/utils/dateUtils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
+import { notices } from '@/data/notices';
 
 const NoticeList = () => {
   const navigate = useNavigate();
 
-  const notices = [
-    { 
-      id: '1', 
-      tag: '경영', 
-      title: '[경영] 사내 보안 시스템 점검 안내',
-      date: formatDate(getRelativeDate(-7)),
-      isHorror: false 
-    },
-    { 
-      id: '2', 
-      tag: '안내', 
-      title: '[안내] 하반기 독감 예방접종 지원 안내',
-      date: formatDate(getRelativeDate(-14)),
-      isHorror: false 
-    },
-    { 
-      id: '3', 
-      tag: '필독', 
-      title: '[필독] 3층 휴게실 분실물 습득 안내',
-      date: formatDate(getRelativeDate(-3)),
-      isHorror: true 
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/dashboard')}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            대시보드
-          </Button>
-          <h1 className="text-2xl font-bold text-foreground">공지사항</h1>
+    <Layout>
+      <div className="max-w-6xl mx-auto space-y-6">
+
+        {/* Page Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Bell className="h-6 w-6 text-primary" />
+              공지사항
+            </h1>
+            <p className="text-muted-foreground mt-1 text-sm">사내 주요 소식과 안내사항을 확인하세요.</p>
+          </div>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="제목 또는 내용 검색" className="pl-9" />
+            </div>
+            <Button>검색</Button>
+          </div>
         </div>
 
-        <Card>
+        {/* Notice Board Table */}
+        <Card className="border-none shadow-md bg-white">
           <CardContent className="p-0">
-            <div className="divide-y divide-border">
-              {notices.map((notice) => (
-                <div
-                  key={notice.id}
-                  onClick={() => navigate(`/notices/${notice.id}`)}
-                  className={`p-4 hover:bg-secondary/50 cursor-pointer transition-colors ${
-                    notice.isHorror ? 'hover:bg-destructive/10' : ''
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Badge variant={notice.isHorror ? 'destructive' : 'secondary'}>
-                      {notice.tag}
-                    </Badge>
-                    <span className="text-foreground flex-1">{notice.title}</span>
-                    <span className="text-sm text-muted-foreground">{notice.date}</span>
+            <div className="w-full text-sm text-left">
+              {/* Table Header */}
+              <div className="flex items-center bg-slate-50 border-b border-border py-3 px-6 font-medium text-slate-500">
+                <div className="w-16 text-center shrink-0">번호</div>
+                <div className="w-24 text-center shrink-0">구분</div>
+                <div className="flex-1 px-4">제목</div>
+                <div className="w-32 text-center shrink-0 hidden md:block">작성자</div>
+                <div className="w-24 text-center shrink-0">작성일</div>
+              </div>
+
+              {/* Table Body */}
+              <div className="divide-y divide-border">
+                {notices.map((notice, index) => (
+                  <div
+                    key={notice.id}
+                    onClick={() => navigate(`/notices/${notice.id}`)}
+                    className={`flex items-center py-4 px-6 cursor-pointer hover:bg-blue-50/50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
+                      }`}
+                  >
+                    <div className="w-16 text-center text-slate-400 shrink-0 font-mono text-xs">
+                      {notices.length - index}
+                    </div>
+                    <div className="w-24 text-center shrink-0">
+                      <Badge
+                        variant="secondary"
+                        className={`font-normal ${notice.tag === '필독'
+                            ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                      >
+                        {notice.tag}
+                      </Badge>
+                    </div>
+                    <div className="flex-1 px-4 font-medium text-slate-700 group-hover:text-primary transition-colors truncate">
+                      {notice.title}
+                    </div>
+                    <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">
+                      {notice.author}
+                    </div>
+                    <div className="w-24 text-center text-slate-400 shrink-0 text-xs">
+                      {notice.date}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+
+                {/* Empty Rows Filler (Visual) */}
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={`empty-${i}`} className="flex items-center py-4 px-6 opacity-40">
+                    <div className="w-16 text-center text-slate-300 shrink-0 font-mono text-xs">-</div>
+                    <div className="w-24 text-center shrink-0"></div>
+                    <div className="flex-1 px-4 text-slate-300">표시할 내용이 없습니다.</div>
+                    <div className="w-32 text-center shrink-0 hidden md:block"></div>
+                    <div className="w-24 text-center shrink-0"></div>
+                  </div>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* Pagination (Mock) */}
+        <div className="flex justify-center items-center gap-2 mt-8">
+          <Button variant="outline" size="icon" disabled>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button variant="default" size="sm" className="w-8 h-8 p-0">1</Button>
+          <Button variant="ghost" size="sm" className="w-8 h-8 p-0">2</Button>
+          <Button variant="ghost" size="sm" className="w-8 h-8 p-0">3</Button>
+          <span className="text-muted-foreground">...</span>
+          <Button variant="outline" size="icon">
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

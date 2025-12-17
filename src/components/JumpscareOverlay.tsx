@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
+import { useUserStore } from '@/store/userStore';
 
 interface JumpscareOverlayProps {
   onComplete: () => void;
 }
 
 const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
+  const { setNavigationDisabled } = useUserStore();
   const [phase, setPhase] = useState<'silence' | 'typing-nugoo' | 'typing-die' | 'terminal' | 'end'>('silence');
   const [typingText, setTypingText] = useState('');
   const [terminalLines, setTerminalLines] = useState<{ timestamp: string; message: string; isAbnormal: boolean }[]>([]);
@@ -14,12 +16,15 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
   const textContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Disable navigation globally
+    setNavigationDisabled(true);
+
     // Start typing "누구야?" after short silence
     const silenceTimer = setTimeout(() => setPhase('typing-nugoo'), 300);
-    
+
     // Transition to "죽어" phase after 5 seconds
     const diePhaseTimer = setTimeout(() => setPhase('typing-die'), 5000);
-    
+
     // Transition to terminal phase after 10 seconds
     const terminalTimer = setTimeout(() => setPhase('terminal'), 10000);
 
@@ -27,8 +32,10 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
       clearTimeout(silenceTimer);
       clearTimeout(diePhaseTimer);
       clearTimeout(terminalTimer);
+      // Re-enable navigation on cleanup
+      setNavigationDisabled(false);
     };
-  }, []);
+  }, [setNavigationDisabled]);
 
   // Generate random timestamp - mix of current time and old dates
   const generateTimestamp = (index: number) => {
@@ -72,7 +79,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
         '-rw-r--r--. 1 root root  196 Mar 25 2017 colorgrep.csh',
         '-rw-r--r--. 1 root root  201 Mar 25 2017 colorgrep.sh',
       ];
-      
+
       const abnormalMessages = [
         '',
         '> SYSTEM ALERT: Unauthorized Access Detected.',
@@ -81,10 +88,10 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
         '> Camera: ON',
         '> Microphone: ON'
       ];
-      
+
       const allMessages = [...normalMessages, ...abnormalMessages];
       let lineIndex = 0;
-      
+
       const addLine = () => {
         if (lineIndex < allMessages.length) {
           const timestamp = generateTimestamp(lineIndex);
@@ -103,12 +110,12 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
       const completeTimer = setTimeout(() => {
         setTrackingBlinking(false);
         // Update tracking line to show [Finish]
-        setTerminalLines(prev => prev.map(line => 
-          line.message === '> Location: Tracking...' 
-            ? { ...line, message: '> Location: Tracking....[Finish]' } 
+        setTerminalLines(prev => prev.map(line =>
+          line.message === '> Location: Tracking...'
+            ? { ...line, message: '> Location: Tracking....[Finish]' }
             : line
         ));
-        
+
         // End and navigate to dashboard after showing [Finish]
         setTimeout(() => {
           setPhase('end');
@@ -133,23 +140,23 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
       const fullText = '누구야? ';
       let charIndex = 0;
       typingSpeedRef.current = 120;
-      
+
       const startTyping = () => {
         intervalRef.current = setTimeout(() => {
           setTypingText(prev => prev + fullText[charIndex]);
           charIndex++;
-          
+
           if (charIndex >= fullText.length) {
             charIndex = 0;
             typingSpeedRef.current = Math.max(15, typingSpeedRef.current * 0.92);
           }
-          
+
           if (phase === 'typing-nugoo') {
             startTyping();
           }
         }, typingSpeedRef.current);
       };
-      
+
       startTyping();
 
       return () => {
@@ -164,23 +171,23 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
       const fullText = '죽어';
       let charIndex = 0;
       typingSpeedRef.current = 40;
-      
+
       const startTyping = () => {
         intervalRef.current = setTimeout(() => {
           setTypingText(prev => prev + fullText[charIndex]);
           charIndex++;
-          
+
           if (charIndex >= fullText.length) {
             charIndex = 0;
             typingSpeedRef.current = Math.max(3, typingSpeedRef.current * 0.88);
           }
-          
+
           if (phase === 'typing-die') {
             startTyping();
           }
         }, typingSpeedRef.current);
       };
-      
+
       startTyping();
 
       return () => {
@@ -194,7 +201,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
   // Terminal phase UI
   if (phase === 'terminal') {
     return (
-      <div className="fixed inset-0 z-50 overflow-hidden font-mono flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[100] bg-black/80 overflow-hidden font-mono flex items-center justify-center p-4">
         {/* Terminal Window */}
         <div className="w-full max-w-4xl h-[80vh] bg-[#1e1e1e]/95 rounded-lg shadow-2xl border border-gray-700 flex flex-col overflow-hidden backdrop-blur-sm">
           {/* Window Title Bar */}
@@ -241,15 +248,15 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black overflow-hidden flex items-start justify-start">
+    <div className="fixed inset-0 z-[100] bg-black overflow-hidden flex items-start justify-start">
       {(phase === 'typing-nugoo' || phase === 'typing-die') && (
-        <div 
+        <div
           ref={textContainerRef}
           className="w-full h-full p-4 overflow-y-auto"
         >
-          <p 
+          <p
             className="text-4xl md:text-5xl lg:text-6xl leading-tight break-all font-bold"
-            style={{ 
+            style={{
               fontFamily: 'Gungsuh, 궁서체, serif',
               color: 'hsl(var(--horror-red))',
               wordBreak: 'break-all',

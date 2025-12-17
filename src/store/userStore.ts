@@ -9,10 +9,12 @@ interface UserState {
   isLoggedIn: boolean;
   hasWelfareMallAccess: boolean;
   welfareMallLoginId: string;
+  welfareMallHiddenAccess: boolean;
   backButtonCount: number;
   spamMessageDeleted: boolean;
   jumpscareViewed: boolean;
-  
+  isNavigationDisabled: boolean;
+
   login: (id: string) => void;
   logout: () => void;
   loginToWelfareMall: (id: string, password: string) => boolean;
@@ -21,6 +23,7 @@ interface UserState {
   deleteSpamMessage: () => void;
   corruptUserName: () => void;
   setJumpscareViewed: () => void;
+  setNavigationDisabled: (disabled: boolean) => void;
 }
 
 const getRandomTeam = () => {
@@ -38,9 +41,11 @@ export const useUserStore = create<UserState>()(
       isLoggedIn: false,
       hasWelfareMallAccess: false,
       welfareMallLoginId: '',
+      welfareMallHiddenAccess: false,
       backButtonCount: 0,
       spamMessageDeleted: false,
       jumpscareViewed: false,
+      isNavigationDisabled: false,
 
       login: (id: string) => {
         if (id === '김솔음') {
@@ -70,16 +75,20 @@ export const useUserStore = create<UserState>()(
           isLoggedIn: false,
           hasWelfareMallAccess: false,
           welfareMallLoginId: '',
+          welfareMallHiddenAccess: false,
           backButtonCount: 0,
           spamMessageDeleted: false,
           jumpscareViewed: false,
+          isNavigationDisabled: false,
         });
       },
 
-      loginToWelfareMall: (id: string, _password: string) => {
+      loginToWelfareMall: (id: string, password: string) => {
+        const isHiddenAccess = id === 'yongj1111' && password === 'Dydajflgodks!111';
         set({
           hasWelfareMallAccess: true,
           welfareMallLoginId: id,
+          welfareMallHiddenAccess: isHiddenAccess
         });
         return true;
       },
@@ -102,6 +111,10 @@ export const useUserStore = create<UserState>()(
 
       setJumpscareViewed: () => {
         set({ jumpscareViewed: true });
+      },
+
+      setNavigationDisabled: (disabled: boolean) => {
+        set({ isNavigationDisabled: disabled });
       },
     }),
     {
