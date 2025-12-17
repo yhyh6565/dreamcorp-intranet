@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Gift, Building2, Heart, LogOut, Bell, Mail, Calendar, MapPin, AlertTriangle } from 'lucide-react';
 import JumpscareOverlay from '@/components/JumpscareOverlay';
 import SpamMessageModal from '@/components/SpamMessageModal';
+import { formatDate, getRelativeDate } from '@/utils/dateUtils';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const [showJumpscare, setShowJumpscare] = useState(false);
   const [showSpamMessage, setShowSpamMessage] = useState(false);
   const [pointsFlicker, setPointsFlicker] = useState(false);
+  const today = new Date();
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -40,6 +42,8 @@ const Dashboard = () => {
   const handleNoticeClick = (index: number) => {
     if (index === 2) {
       setShowJumpscare(true);
+    } else {
+      navigate(`/notices/${index + 1}`);
     }
   };
 
@@ -48,8 +52,8 @@ const Dashboard = () => {
   };
 
   const notices = [
-    { tag: '경영', title: '11월 사내 보안 시스템 점검', isHorror: false },
-    { tag: '행사', title: '10월 생일자 축하 파티', isHorror: false },
+    { tag: '경영', title: '사내 보안 시스템 점검', isHorror: false },
+    { tag: '안내', title: '하반기 독감 예방접종 지원', isHorror: false },
     { tag: '필독', title: '3층 휴게실 분실물 습득 안내', isHorror: true },
   ];
 
@@ -91,7 +95,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - 담당 관리 구역 */}
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 cursor-pointer hover:bg-secondary/30 transition-colors" onClick={() => navigate('/floor-map')}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <MapPin className="h-5 w-5 text-primary" />
@@ -108,7 +112,7 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground">위치: 지하 2층</p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <AlertTriangle className="h-3 w-3" />
-                  <span>마지막 점검: 2024.10.20</span>
+                  <span>마지막 점검: {formatDate(getRelativeDate(-5))}</span>
                 </div>
               </div>
             </CardContent>
@@ -117,7 +121,7 @@ const Dashboard = () => {
           {/* Center Column - 일정 및 공지사항 */}
           <Card className="lg:col-span-1">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
+              <CardTitle className="flex items-center gap-2 text-lg cursor-pointer hover:text-primary transition-colors" onClick={() => navigate('/notices')}>
                 <Bell className="h-5 w-5 text-primary" />
                 일정 및 공지사항
               </CardTitle>
@@ -125,12 +129,12 @@ const Dashboard = () => {
             <CardContent className="space-y-6">
               {/* Schedule */}
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2 cursor-pointer hover:text-primary" onClick={() => navigate('/calendar')}>
                   <Calendar className="h-4 w-4" />
-                  일정
+                  금주 근무 일정
                 </h4>
                 <div className="bg-secondary/50 rounded-lg p-3">
-                  <p className="text-sm font-medium text-foreground">10/24 (목) 14:00</p>
+                  <p className="text-sm font-medium text-foreground">{formatDate(getRelativeDate(3), 'short')} 14:00</p>
                   <p className="text-sm text-muted-foreground">[현장] 4구역 정기 순찰</p>
                 </div>
               </div>
