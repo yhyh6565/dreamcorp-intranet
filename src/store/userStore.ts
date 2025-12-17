@@ -11,6 +11,7 @@ interface UserState {
   welfareMallLoginId: string;
   backButtonCount: number;
   spamMessageDeleted: boolean;
+  jumpscareViewed: boolean;
   
   login: (id: string) => void;
   logout: () => void;
@@ -19,6 +20,7 @@ interface UserState {
   resetBackButton: () => void;
   deleteSpamMessage: () => void;
   corruptUserName: () => void;
+  setJumpscareViewed: () => void;
 }
 
 const getRandomTeam = () => {
@@ -38,6 +40,7 @@ export const useUserStore = create<UserState>()(
       welfareMallLoginId: '',
       backButtonCount: 0,
       spamMessageDeleted: false,
+      jumpscareViewed: false,
 
       login: (id: string) => {
         if (id === '김솔음') {
@@ -69,6 +72,7 @@ export const useUserStore = create<UserState>()(
           welfareMallLoginId: '',
           backButtonCount: 0,
           spamMessageDeleted: false,
+          jumpscareViewed: false,
         });
       },
 
@@ -94,6 +98,10 @@ export const useUserStore = create<UserState>()(
 
       corruptUserName: () => {
         set({ userName: '■■■' });
+      },
+
+      setJumpscareViewed: () => {
+        set({ jumpscareViewed: true });
       },
     }),
     {

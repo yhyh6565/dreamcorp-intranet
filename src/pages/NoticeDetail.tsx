@@ -6,26 +6,27 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate, getRelativeDate } from '@/utils/dateUtils';
 import JumpscareOverlay from '@/components/JumpscareOverlay';
+import { useUserStore } from '@/store/userStore';
 
 const NoticeDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { jumpscareViewed, setJumpscareViewed } = useUserStore();
   const [showJumpscare, setShowJumpscare] = useState(false);
-  const [trapTriggered, setTrapTriggered] = useState(false);
 
-  // 트랩 게시글 (분실물)일 경우 5초 후 점프스케어
+  // 트랩 게시글 (분실물)일 경우 5초 후 점프스케어 - 세션당 1회만
   useEffect(() => {
-    if (id === '3' && !trapTriggered) {
+    if (id === '3' && !jumpscareViewed) {
       const timer = setTimeout(() => {
-        setTrapTriggered(true);
         setShowJumpscare(true);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [id, trapTriggered]);
+  }, [id, jumpscareViewed]);
 
   const handleJumpscareComplete = () => {
     setShowJumpscare(false);
+    setJumpscareViewed();
     navigate('/notices');
   };
 

@@ -194,9 +194,9 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
   // Terminal phase UI
   if (phase === 'terminal') {
     return (
-      <div className="fixed inset-0 z-50 bg-black overflow-hidden font-mono flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 overflow-hidden font-mono flex items-center justify-center p-4">
         {/* Terminal Window */}
-        <div className="w-full max-w-4xl h-[80vh] bg-[#1e1e1e] rounded-lg shadow-2xl border border-gray-700 flex flex-col overflow-hidden">
+        <div className="w-full max-w-4xl h-[80vh] bg-[#1e1e1e]/95 rounded-lg shadow-2xl border border-gray-700 flex flex-col overflow-hidden backdrop-blur-sm">
           {/* Window Title Bar */}
           <div className="flex items-center justify-between px-4 py-2 bg-[#323232] border-b border-gray-600">
             {/* macOS style buttons */}
