@@ -13,33 +13,24 @@ const MessageDetail = () => {
   
   // Easter egg states for spam message
   const [showGlitch, setShowGlitch] = useState(false);
-  const [showPopups, setShowPopups] = useState(false);
-  const [popupCount, setPopupCount] = useState(0);
-  const [hasTriggeredEasterEgg, setHasTriggeredEasterEgg] = useState(false);
+  const [showRetyping, setShowRetyping] = useState(false);
+  const [retypedText, setRetypedText] = useState('');
+  const [hideBackButton, setHideBackButton] = useState(false);
   const [canTriggerBackEasterEgg, setCanTriggerBackEasterEgg] = useState(false);
   const thankYouRef = useRef<HTMLParagraphElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const retypeContainerRef = useRef<HTMLDivElement>(null);
+
+  const retypeMessage = '우리 모두는 한낱 이야기에 불과하다 위대하신 이름님 ';
 
   // Check if "감사합니다" is visible
   useEffect(() => {
-    if (id !== '2' || hasTriggeredEasterEgg) return;
+    if (id !== '2' || canTriggerBackEasterEgg) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setHasTriggeredEasterEgg(true);
-          // Enable back button easter egg trigger
           setCanTriggerBackEasterEgg(true);
-          
-          // After 5 seconds, show glitch effect
-          setTimeout(() => {
-            setShowGlitch(true);
-            
-            // After 2 seconds of glitch, stop glitch
-            setTimeout(() => {
-              setShowGlitch(false);
-            }, 2000);
-          }, 5000);
         }
       },
       { threshold: 0.5 }
@@ -50,29 +41,43 @@ const MessageDetail = () => {
     }
 
     return () => observer.disconnect();
-  }, [id, hasTriggeredEasterEgg]);
+  }, [id, canTriggerBackEasterEgg]);
 
-  // Popup animation effect
+  // Retyping effect
   useEffect(() => {
-    if (showPopups && popupCount < 40) {
-      const timer = setTimeout(() => {
-        setPopupCount(prev => prev + 1);
-      }, 80);
-      return () => clearTimeout(timer);
-    } else if (showPopups && popupCount >= 40) {
-      // All popups shown, wait a moment then navigate
-      const timer = setTimeout(() => {
-        deleteSpamMessage();
-        navigate('/dashboard');
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [showPopups, popupCount, deleteSpamMessage, navigate]);
+    if (!showRetyping) return;
+
+    let charIndex = 0;
+    const totalDuration = 10000; // 10 seconds
+    const charsNeeded = Math.ceil(totalDuration / 15); // Very fast typing
+    
+    const typeInterval = setInterval(() => {
+      setRetypedText(prev => prev + retypeMessage[charIndex % retypeMessage.length]);
+      charIndex++;
+      
+      // Auto scroll
+      if (retypeContainerRef.current) {
+        retypeContainerRef.current.scrollTop = retypeContainerRef.current.scrollHeight;
+      }
+    }, 15);
+
+    // After 10 seconds, navigate away
+    const endTimer = setTimeout(() => {
+      clearInterval(typeInterval);
+      deleteSpamMessage();
+      navigate('/dashboard');
+    }, totalDuration);
+
+    return () => {
+      clearInterval(typeInterval);
+      clearTimeout(endTimer);
+    };
+  }, [showRetyping, deleteSpamMessage, navigate]);
 
   const handleBackClick = () => {
     if (id === '2' && canTriggerBackEasterEgg) {
-      // Trigger popup easter egg
-      setShowPopups(true);
+      setHideBackButton(true);
+      setShowRetyping(true);
     } else {
       navigate('/messages');
     }
@@ -195,14 +200,6 @@ const MessageDetail = () => {
 
   const message = messages[id as keyof typeof messages];
 
-  // Generate stable popup positions once
-  const popupPositions = useRef(
-    Array.from({ length: 40 }).map((_, i) => ({
-      top: 5 + (i % 8) * 10 + Math.random() * 5,
-      left: 5 + (i % 6) * 12 + Math.random() * 8,
-    }))
-  ).current;
-
   if (!message) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -214,14 +211,16 @@ const MessageDetail = () => {
   return (
     <div className="min-h-screen bg-background p-6 relative">
       <div className="max-w-4xl mx-auto">
-        <Button 
-          variant="ghost" 
-          onClick={handleBackClick}
-          className="mb-6"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          쪽지함
-        </Button>
+        {!hideBackButton && (
+          <Button 
+            variant="ghost" 
+            onClick={handleBackClick}
+            className="mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            쪽지함
+          </Button>
+        )}
 
         <Card className={showGlitch ? 'animate-glitch' : ''}>
           <CardHeader className={`border-b border-border space-y-3 ${showGlitch ? 'animate-glitch' : ''}`}>
@@ -245,55 +244,24 @@ const MessageDetail = () => {
             </div>
           </CardHeader>
           <CardContent ref={contentRef} className="pt-6">
-            <div className="text-foreground leading-relaxed">
-              {message.content}
-            </div>
+            {showRetyping ? (
+              <div 
+                ref={retypeContainerRef}
+                className="text-foreground leading-relaxed max-h-[60vh] overflow-y-auto"
+              >
+                <p className="break-all whitespace-pre-wrap">
+                  {retypedText}
+                  <span className="animate-blink">|</span>
+                </p>
+              </div>
+            ) : (
+              <div className="text-foreground leading-relaxed">
+                {message.content}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
-
-      {/* Windows-style popup overlays - appears on top of message content */}
-      {showPopups && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          {Array.from({ length: popupCount }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute shadow-[4px_4px_0px_rgba(0,0,0,0.3)]"
-              style={{
-                top: `${popupPositions[i].top}%`,
-                left: `${popupPositions[i].left}%`,
-                zIndex: 50 + i,
-                width: '280px',
-              }}
-            >
-              {/* Windows-style title bar */}
-              <div 
-                className="px-2 py-1 flex items-center justify-between"
-                style={{ background: 'linear-gradient(180deg, #000080 0%, #1084d0 100%)' }}
-              >
-                <span className="text-white text-xs font-bold">System message</span>
-                <button className="w-4 h-4 bg-[#c0c0c0] border border-t-white border-l-white border-r-[#808080] border-b-[#808080] text-xs flex items-center justify-center">
-                  ✕
-                </button>
-              </div>
-              {/* Content area */}
-              <div className="bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080] p-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
-                    ✕
-                  </div>
-                  <span className="text-black font-bold">도망칠 수 없습니다.</span>
-                </div>
-                <div className="flex justify-center">
-                  <button className="px-6 py-1 bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080] text-black text-sm font-bold">
-                    Ok
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
