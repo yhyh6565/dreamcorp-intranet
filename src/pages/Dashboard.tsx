@@ -45,11 +45,8 @@ const Dashboard = () => {
   };
 
   const handleNoticeClick = (index: number) => {
-    if (index === 2) {
-      setShowJumpscare(true);
-    } else {
-      navigate(`/notices/${index + 1}`);
-    }
+    // All notices navigate to detail page (3rd notice triggers jumpscare after 5 seconds there)
+    navigate(`/notices/${index + 1}`);
   };
 
   const handleMessageClick = (messageId: number) => {

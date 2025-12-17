@@ -35,7 +35,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
     if (phase === 'typing-nugoo') {
       const fullText = '누구야? ';
       let charIndex = 0;
-      typingSpeedRef.current = 25; // 7x faster (was 180)
+      typingSpeedRef.current = 120; // Start slower for gradual acceleration
       
       const startTyping = () => {
         intervalRef.current = setTimeout(() => {
@@ -44,8 +44,8 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
           
           if (charIndex >= fullText.length) {
             charIndex = 0;
-            // Speed up gradually
-            typingSpeedRef.current = Math.max(6, typingSpeedRef.current - 2);
+            // Gradually speed up
+            typingSpeedRef.current = Math.max(15, typingSpeedRef.current * 0.92);
           }
           
           if (phase === 'typing-nugoo') {
@@ -67,7 +67,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
     if (phase === 'typing-die') {
       const fullText = '죽어';
       let charIndex = 0;
-      typingSpeedRef.current = 12; // 7x faster (was 80)
+      typingSpeedRef.current = 40; // Start moderate, then accelerate
       
       const startTyping = () => {
         intervalRef.current = setTimeout(() => {
@@ -76,8 +76,8 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
           
           if (charIndex >= fullText.length) {
             charIndex = 0;
-            // Speed up more aggressively
-            typingSpeedRef.current = Math.max(2, typingSpeedRef.current - 1);
+            // Accelerate more aggressively
+            typingSpeedRef.current = Math.max(3, typingSpeedRef.current * 0.88);
           }
           
           if (phase === 'typing-die') {
@@ -101,13 +101,13 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
       {(phase === 'typing-nugoo' || phase === 'typing-die') && (
         <div className="w-full h-full p-4 overflow-hidden">
           <p 
-            className="text-xl md:text-2xl leading-tight break-all"
+            className="text-7xl md:text-8xl lg:text-9xl leading-none break-all font-bold"
             style={{ 
               fontFamily: 'Gungsuh, 궁서체, serif',
               color: 'hsl(var(--horror-red))',
-              textShadow: '0 0 8px hsl(var(--horror-red) / 0.5)',
+              textShadow: '0 0 20px hsl(var(--horror-red) / 0.7)',
               wordBreak: 'break-all',
-              lineHeight: '1.4'
+              lineHeight: '1.1'
             }}
           >
             {typingText}
