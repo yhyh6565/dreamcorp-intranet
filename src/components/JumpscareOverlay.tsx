@@ -70,7 +70,7 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
       };
       addLine();
 
-      // Stop blinking and complete after 7 seconds
+      // Stop blinking after 7 seconds total
       const completeTimer = setTimeout(() => {
         setTrackingBlinking(false);
         // Update tracking line to show [완료]
@@ -78,11 +78,11 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
           line === '> Location: Tracking...' ? '> Location: Tracking... [완료]' : line
         ));
         
-        // End after a brief moment
+        // End and navigate to dashboard
         setTimeout(() => {
           setPhase('end');
           onComplete();
-        }, 1000);
+        }, 500);
       }, 7000);
 
       return () => clearTimeout(completeTimer);
