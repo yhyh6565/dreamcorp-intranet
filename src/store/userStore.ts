@@ -67,6 +67,7 @@ export const useUserStore = create<UserState>()(
           hasWelfareMallAccess: false,
           welfareMallLoginId: '',
           backButtonCount: 0,
+          spamMessageDeleted: false,
         });
       },
 
