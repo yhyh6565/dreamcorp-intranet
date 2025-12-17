@@ -3,11 +3,13 @@ import { ArrowLeft, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, getRelativeDate } from '@/utils/dateUtils';
+import { useUserStore } from '@/store/userStore';
 
 const MessageList = () => {
   const navigate = useNavigate();
+  const { spamMessageDeleted } = useUserStore();
 
-  const messages = [
+  const allMessages = [
     { 
       id: '1', 
       sender: '경영지원',
@@ -23,6 +25,11 @@ const MessageList = () => {
       isSpam: true 
     },
   ];
+
+  // Filter out spam message if it's been deleted
+  const messages = spamMessageDeleted 
+    ? allMessages.filter(m => m.id !== '2')
+    : allMessages;
 
   return (
     <div className="min-h-screen bg-background p-6">

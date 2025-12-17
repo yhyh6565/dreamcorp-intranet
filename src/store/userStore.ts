@@ -10,12 +10,14 @@ interface UserState {
   hasWelfareMallAccess: boolean;
   welfareMallLoginId: string;
   backButtonCount: number;
+  spamMessageDeleted: boolean;
   
   login: (id: string) => void;
   logout: () => void;
   loginToWelfareMall: (id: string, password: string) => boolean;
   incrementBackButton: () => void;
   resetBackButton: () => void;
+  deleteSpamMessage: () => void;
 }
 
 const getRandomTeam = () => {
@@ -34,6 +36,7 @@ export const useUserStore = create<UserState>()(
       hasWelfareMallAccess: false,
       welfareMallLoginId: '',
       backButtonCount: 0,
+      spamMessageDeleted: false,
 
       login: (id: string) => {
         if (id === '김솔음') {
@@ -79,6 +82,10 @@ export const useUserStore = create<UserState>()(
 
       resetBackButton: () => {
         set({ backButtonCount: 0 });
+      },
+
+      deleteSpamMessage: () => {
+        set({ spamMessageDeleted: true });
       },
     }),
     {

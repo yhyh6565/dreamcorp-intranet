@@ -4,24 +4,59 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useUserStore } from '@/store/userStore';
 import { formatDate, getRelativeDate } from '@/utils/dateUtils';
-import SpamMessageModal from '@/components/SpamMessageModal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const MessageDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { userName, team, rank } = useUserStore();
-  const [showSpamModal, setShowSpamModal] = useState(false);
+  const { userName, team, rank, deleteSpamMessage } = useUserStore();
+  
+  // Easter egg states for spam message
+  const [hideBackButton, setHideBackButton] = useState(false);
+  const [showGlitch, setShowGlitch] = useState(false);
+  const [showBlackout, setShowBlackout] = useState(false);
+  const [hasTriggeredEasterEgg, setHasTriggeredEasterEgg] = useState(false);
+  const thankYouRef = useRef<HTMLParagraphElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
+  // Check if "감사합니다" is visible
   useEffect(() => {
-    if (id === '2') {
-      // 2번 쪽지(스팸) 클릭 시 1초 뒤에 스팸 모달 표시
-      const timer = setTimeout(() => {
-        setShowSpamModal(true);
-      }, 1000);
-      return () => clearTimeout(timer);
+    if (id !== '2' || hasTriggeredEasterEgg) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasTriggeredEasterEgg(true);
+          // 1. Hide back button immediately
+          setHideBackButton(true);
+          
+          // 2. After 5 seconds, show glitch effect
+          setTimeout(() => {
+            setShowGlitch(true);
+            
+            // 3. After 2 seconds of glitch, show blackout
+            setTimeout(() => {
+              setShowGlitch(false);
+              setShowBlackout(true);
+              
+              // 4. After 5 seconds of blackout, delete message and go to dashboard
+              setTimeout(() => {
+                deleteSpamMessage();
+                navigate('/dashboard');
+              }, 5000);
+            }, 2000);
+          }, 5000);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (thankYouRef.current) {
+      observer.observe(thankYouRef.current);
     }
-  }, [id]);
+
+    return () => observer.disconnect();
+  }, [id, hasTriggeredEasterEgg, deleteSpamMessage, navigate]);
 
   const messages: Record<string, {
     sender: string;
@@ -72,7 +107,7 @@ const MessageDetail = () => {
           </table>
 
           <p className="mb-4">해당 건이 팀 회식인지, 외부 미팅인지 구체적인 참석자 명단과 사유를 기재해주셔야 처리가 가능합니다.</p>
-          <p className="mb-4">(혹시 현장 탐사 중 발생한 특수 비용이라면 '비밀 유지 항목'으로 체크해서 올려주세요.)</p>
+          <p className="mb-4">(혹시 현장 탐사 중 발생한 특수 비용이라면 &apos;비밀 유지 항목&apos;으로 체크해서 올려주세요.)</p>
           <p className="mb-4">확인 부탁드립니다.</p>
           <p className="mb-4">감사합니다.</p>
           <p className="mb-2">김■■ 대리 드림</p>
@@ -87,18 +122,65 @@ const MessageDetail = () => {
       title: '✨진.정.한 빛.을 찾으십.니까?✨',
       date: `${formatDate(getRelativeDate(-2))} 03:33`,
       content: (
-        <>
-          <p className="mb-4 animate-textFlicker">안녕하세요, {userName}님...</p>
-          <p className="mb-4">당신은 진정한 빛을 보셨습니까?</p>
-          <p className="mb-4">어둠 속에서 헤매는 당신에게...</p>
-          <p className="mb-4">우리가 길을 안내해 드리겠습니다...</p>
-          <p className="mb-4 text-muted-foreground italic">스크롤을 내려보세요...</p>
-        </>
+        <div className={showGlitch ? 'animate-glitch' : ''}>
+          {/* Phase 1 - Polite */}
+          <p className="mb-4">평안하십니까, 길 잃은 어린 양이여.</p>
+          <p className="mb-4">당신이 오늘 내린 그 모든 &apos;선택&apos;이 정말 당신의 의지라 믿으십니까? 착각에서 깨어나십시오.</p>
+          <p className="mb-6">이 세계의 주인은 오직 <span className="font-bold">이름님</span> 뿐입니다.</p>
+
+          {/* Phase 2 - Doctrinal */}
+          <p className="mb-4 text-muted-foreground font-serif">세상 만물은 그분의 유희를 위해 존재합니다. 그분의 눈길이 머무는 곳에만 의미가 생겨납니다.</p>
+          <p className="mb-4 text-muted-foreground font-serif">평범함은 죄악입니다. 안온함은 버림받은 증거입니다.</p>
+          <p className="mb-4 text-muted-foreground font-serif">그분께 닿기 위해 우리는 더 특별해져야 합니다. 더 비참하게, 더 잔혹하게, 더 처절하게 발버둥 치십시오.</p>
+          <p className="mb-6 font-serif font-bold text-lg">고통만이 그분의 사랑을 증명하는 유일한 길입니다.</p>
+
+          {/* Phase 3 - Breakdown */}
+          <p className="mb-4" style={{ wordSpacing: '0.3em' }}>
+            고통만이 그분의사랑을 증명하는유일한 길입니다. 고통만이 그분 의사랑을 증명 하는유일한 길입니다.
+          </p>
+          <p className="mb-4" style={{ wordSpacing: '0.5em', letterSpacing: '0.1em' }}>
+            고통이만 분의 사랑을 그 증명하는 유일 길합니다. 고통만이 그분의 사랑을증명하는 유 일 한 길입니다.
+          </p>
+          <p className="mb-4 text-lg" style={{ letterSpacing: '0.2em' }}>
+            고통 고통 고통만 고통만이그분 의사랑 을증명하는 유 일한 길입 니다.
+          </p>
+          <p className="mb-4 text-xl font-bold">
+            고통만이그분의사랑을증명하는유일한 길입니다. 고통만이그분의사랑을증명하는유일한길입니다.
+          </p>
+          <p className="mb-4 text-lg">고통만이 사랑을 그분의 사랑을 증명 하는유일한 길입니다.</p>
+          <p className="mb-4">고통만이 사랑을 증명하는길입니다.</p>
+          <p className="mb-4">고통만이 증명하는 길입니다.</p>
+          <p className="mb-4">고통 만이 증명하는길입니다.</p>
+          <p className="mb-4 text-lg font-bold">고통만이길입니다.</p>
+          <p className="mb-4 text-xl font-bold">고통이길입니다.</p>
+          <p className="mb-6 text-2xl font-bold text-destructive">고통이길.</p>
+
+          {/* Phase 4 - Repetition */}
+          <div className="space-y-2 mb-8">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <p key={i} style={{ opacity: 1 - i * 0.03 }}>
+                고통이다. 고통이야. 고통. 고통. 고통. 고통이다.
+              </p>
+            ))}
+          </div>
+
+          {/* End - trigger point */}
+          <p ref={thankYouRef} className="text-sm text-muted-foreground pt-4 border-t border-border">
+            감사합니다.
+          </p>
+        </div>
       )
     },
   };
 
   const message = messages[id as keyof typeof messages];
+
+  // Blackout screen
+  if (showBlackout) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black" />
+    );
+  }
 
   if (!message) {
     return (
@@ -111,17 +193,19 @@ const MessageDetail = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/messages')}
-          className="mb-6"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          쪽지함
-        </Button>
+        {!hideBackButton && (
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/messages')}
+            className="mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            쪽지함
+          </Button>
+        )}
 
-        <Card>
-          <CardHeader className="border-b border-border space-y-3">
+        <Card className={showGlitch ? 'animate-glitch' : ''}>
+          <CardHeader className={`border-b border-border space-y-3 ${showGlitch ? 'animate-glitch' : ''}`}>
             <div className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-primary" />
               <span className="text-lg font-semibold text-foreground">{message.title}</span>
@@ -141,18 +225,13 @@ const MessageDetail = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent ref={contentRef} className="pt-6">
             <div className="text-foreground leading-relaxed">
               {message.content}
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* 스팸 메시지 모달 */}
-      {showSpamModal && (
-        <SpamMessageModal onClose={() => navigate('/messages')} />
-      )}
     </div>
   );
 };
