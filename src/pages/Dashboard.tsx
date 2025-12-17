@@ -6,14 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Gift, Building2, Heart, LogOut, Bell, Mail, Calendar, MapPin, AlertTriangle } from 'lucide-react';
 import JumpscareOverlay from '@/components/JumpscareOverlay';
-import SpamMessageModal from '@/components/SpamMessageModal';
 import { formatDate, getRelativeDate } from '@/utils/dateUtils';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { userName, team, rank, points, isLoggedIn, logout } = useUserStore();
+  const { userName, team, rank, points, isLoggedIn, logout, spamMessageDeleted } = useUserStore();
   const [showJumpscare, setShowJumpscare] = useState(false);
-  const [showSpamMessage, setShowSpamMessage] = useState(false);
   const [pointsFlicker, setPointsFlicker] = useState(false);
   const today = new Date();
 
@@ -47,8 +45,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleSpamClick = () => {
-    setShowSpamMessage(true);
+  const handleMessageClick = (messageId: number) => {
+    navigate(`/messages/${messageId}`);
   };
 
   const notices = [
@@ -57,10 +55,14 @@ const Dashboard = () => {
     { tag: '필독', title: '3층 휴게실 분실물 습득 안내', isHorror: true },
   ];
 
-  const messages = [
-    { sender: '경영지원', title: '법인카드 사용 내역...', isSpam: false },
-    { sender: '광고', title: '✨진.정.한 빛.을 찾으십.니까?✨', isSpam: true },
+  const allMessages = [
+    { id: 1, sender: '경영지원', title: '법인카드 사용 내역...', isSpam: false },
+    { id: 2, sender: '광고', title: '✨진.정.한 빛.을 찾으십.니까?✨', isSpam: true },
   ];
+
+  const messages = spamMessageDeleted 
+    ? allMessages.filter(m => m.id !== 2)
+    : allMessages;
 
   return (
     <div className="min-h-screen bg-background">
@@ -208,10 +210,10 @@ const Dashboard = () => {
                   쪽지함
                 </h4>
                 <ul className="space-y-2">
-                  {messages.map((message, index) => (
+                  {messages.map((message) => (
                     <li 
-                      key={index}
-                      onClick={message.isSpam ? handleSpamClick : () => navigate(`/messages/${index + 1}`)}
+                      key={message.id}
+                      onClick={() => handleMessageClick(message.id)}
                       className={`p-3 rounded-md border border-border hover:bg-secondary/50 cursor-pointer transition-colors ${
                         message.isSpam ? 'hover:border-destructive/30' : ''
                       }`}
@@ -232,10 +234,6 @@ const Dashboard = () => {
       {/* Horror Overlays */}
       {showJumpscare && (
         <JumpscareOverlay onComplete={() => setShowJumpscare(false)} />
-      )}
-      
-      {showSpamMessage && (
-        <SpamMessageModal onClose={() => setShowSpamMessage(false)} />
       )}
     </div>
   );
