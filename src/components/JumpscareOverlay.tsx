@@ -5,97 +5,64 @@ interface JumpscareOverlayProps {
 }
 
 const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
-  const [phase, setPhase] = useState<'silence' | 'start' | 'escalation' | 'climax' | 'end'>('silence');
-  const [texts, setTexts] = useState<Array<{ id: number; x: number; y: number; size: number }>>([]);
+  const [phase, setPhase] = useState<'silence' | 'typing' | 'end'>('silence');
+  const [typingText, setTypingText] = useState('');
+  const [typingCount, setTypingCount] = useState(0);
 
   useEffect(() => {
-    // Timeline
-    const silenceTimer = setTimeout(() => setPhase('start'), 500);
-    const escalationTimer = setTimeout(() => setPhase('escalation'), 1000);
-    const climaxTimer = setTimeout(() => setPhase('climax'), 2500);
+    // Start typing after short silence
+    const silenceTimer = setTimeout(() => setPhase('typing'), 500);
+    
+    // End after sufficient time for horror effect
     const endTimer = setTimeout(() => {
       setPhase('end');
       onComplete();
-    }, 4500);
+    }, 8000);
 
     return () => {
       clearTimeout(silenceTimer);
-      clearTimeout(escalationTimer);
-      clearTimeout(climaxTimer);
       clearTimeout(endTimer);
     };
   }, [onComplete]);
 
+  // Infinite typing effect for "누구야?"
   useEffect(() => {
-    if (phase === 'escalation' || phase === 'climax') {
-      const interval = setInterval(() => {
-        setTexts((prev) => [
-          ...prev,
-          {
-            id: Date.now() + Math.random(),
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            size: 16 + Math.random() * 32,
-          },
-        ]);
-      }, phase === 'climax' ? 30 : 100);
+    if (phase === 'typing') {
+      const fullText = '누구야? ';
+      let charIndex = 0;
+      
+      const typingInterval = setInterval(() => {
+        setTypingText(prev => prev + fullText[charIndex]);
+        charIndex++;
+        
+        if (charIndex >= fullText.length) {
+          charIndex = 0;
+          setTypingCount(prev => prev + 1);
+        }
+      }, 150);
 
-      return () => clearInterval(interval);
+      return () => clearInterval(typingInterval);
     }
   }, [phase]);
 
   if (phase === 'end') return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black overflow-hidden">
-      {/* Noise overlay */}
-      {phase !== 'silence' && (
-        <div className="absolute inset-0 noise-overlay opacity-20 pointer-events-none" />
-      )}
-
-      {/* Center text for start phase */}
-      {phase === 'start' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-horror text-2xl text-horror-red animate-text-flicker">
-            누구야?
-          </span>
+    <div className="fixed inset-0 z-50 bg-black overflow-hidden flex items-center justify-center">
+      {phase === 'typing' && (
+        <div className="w-full h-full p-8 overflow-hidden">
+          <p 
+            className="text-2xl md:text-4xl leading-relaxed break-words"
+            style={{ 
+              fontFamily: 'Gungsuh, 궁서체, serif',
+              color: 'hsl(var(--horror-red))',
+              textShadow: '0 0 10px hsl(var(--horror-red) / 0.5)'
+            }}
+          >
+            {typingText}
+            <span className="animate-blink">|</span>
+          </p>
         </div>
-      )}
-
-      {/* Scattered texts */}
-      {(phase === 'escalation' || phase === 'climax') && (
-        <>
-          {texts.map((text) => (
-            <span
-              key={text.id}
-              className={`absolute font-horror ${phase === 'climax' ? 'animate-text-flicker' : ''}`}
-              style={{
-                left: `${text.x}%`,
-                top: `${text.y}%`,
-                fontSize: `${text.size}px`,
-                color: phase === 'climax' ? undefined : 'hsl(var(--horror-red))',
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              누구야?
-            </span>
-          ))}
-
-          {/* Fill screen with text in climax */}
-          {phase === 'climax' && (
-            <div className="absolute inset-0 flex flex-wrap items-center justify-center overflow-hidden">
-              {Array.from({ length: 200 }).map((_, i) => (
-                <span
-                  key={`fill-${i}`}
-                  className="font-horror text-lg md:text-2xl animate-text-flicker mx-1"
-                  style={{ animationDelay: `${Math.random() * 0.2}s` }}
-                >
-                  누구야?
-                </span>
-              ))}
-            </div>
-          )}
-        </>
       )}
     </div>
   );

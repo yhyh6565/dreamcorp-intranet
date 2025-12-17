@@ -51,6 +51,13 @@ const WelfareMall = () => {
     }
   }, [isLoggedIn, hasWelfareMallAccess, navigate]);
 
+  const handleLoginModalClose = (open: boolean) => {
+    if (!open && !hasWelfareMallAccess) {
+      navigate('/dashboard');
+    }
+    setShowLoginModal(open);
+  };
+
   useEffect(() => {
     // Check for space mall trigger
     if (welfareMallLoginId === 'yongj1111' && backButtonCount >= 5) {
@@ -140,7 +147,7 @@ const WelfareMall = () => {
       </main>
 
       {/* Login Modal */}
-      <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
+      <Dialog open={showLoginModal} onOpenChange={handleLoginModalClose}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-center">복지몰 보안 인증</DialogTitle>
