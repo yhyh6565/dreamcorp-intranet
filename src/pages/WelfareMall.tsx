@@ -76,7 +76,7 @@ const WelfareMall = () => {
   }
 
   return (
-    <Layout>
+    <Layout hideSidebar={true}>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
