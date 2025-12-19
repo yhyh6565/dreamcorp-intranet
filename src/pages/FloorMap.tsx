@@ -8,18 +8,57 @@ import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/utils/dateUtils';
 import Layout from '@/components/Layout';
 import { floors, getFloorRooms, FloorData } from '@/data/floorData';
-import { markers as allMarkers, Marker } from '@/data/markerData';
+import { Marker } from '@/data/markerData';
 import { cn } from '@/lib/utils';
 import FloorRoom from '@/components/floor-map/FloorRoom';
 import FloorMarker from '@/components/floor-map/FloorMarker';
+import { useShadowStore } from '@/store/shadowStore';
+
+// Helper for mapping grades
+const mapGradeToStatus = (grade: string): Marker['status'] => {
+  switch (grade) {
+    case 'A': return 'stable';
+    case 'B': return 'stable';
+    case 'C': return 'caution';
+    case 'D': return 'danger';
+    case 'E': return 'danger';
+    case 'F': return 'restricted';
+    default: return 'dormant';
+  }
+};
 
 const FloorMap = () => {
   const navigate = useNavigate();
   const { userName } = useUserStore();
+  const { shadows } = useShadowStore();
+
   const [selectedFloor, setSelectedFloor] = useState<FloorData>(floors[5]); // 10F default
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
 
-  const currentFloorMarkers = allMarkers.filter(m => m.floorId === selectedFloor.id);
+  // Helper to parse floor ID
+  const getFloorNumber = (floorId: string): number => {
+    if (floorId.startsWith('B')) return -parseInt(floorId.replace('B', ''));
+    return parseInt(floorId.replace('F', ''));
+  };
+
+  const currentFloorNum = getFloorNumber(selectedFloor.id);
+
+  const currentFloorMarkers = shadows
+    .filter(s => s.floor === currentFloorNum && s.isAssigned)
+    .map(s => ({
+      id: s.code,
+      floorId: selectedFloor.id,
+      x: s.coordinates.x,
+      y: s.coordinates.y,
+      status: mapGradeToStatus(s.grade),
+      assignee: s.assigneeName,
+      team: s.assigneeTeam,
+      type: 'person',
+      target: s.name,
+      note: s.note,
+      location: s.locationText,
+    } as Marker));
+
   const currentRooms = getFloorRooms(selectedFloor.id);
 
   const handleFloorScroll = (direction: 'up' | 'down') => {
@@ -30,7 +69,6 @@ const FloorMap = () => {
     setSelectedFloor(floors[newIndex]);
   };
 
-  // Helper functions for Legend (duplicated from Marker component for now, or move to shared utils)
   const getStatusColor = (status: Marker['status']) => {
     switch (status) {
       case 'stable': return 'bg-emerald-500 shadow-emerald-500/50';
@@ -52,6 +90,7 @@ const FloorMap = () => {
       default: return '알 수 없음';
     }
   };
+
 
   return (
     <Layout>
@@ -202,13 +241,21 @@ const FloorMap = () => {
                         )}>
                           <div className="bg-slate-900 border border-slate-700 text-slate-200 p-3 rounded shadow-xl flex flex-col items-center relative animate-fade-in-up">
                             <div className="space-y-1 text-center">
-                              <p className="font-bold text-white text-sm whitespace-nowrap">{activeMarker.assignee}</p>
+                              <p className="font-bold text-white text-sm whitespace-nowrap">
+                                {activeMarker.assignee}
+                                {activeMarker.team && <span className="font-normal text-slate-300 ml-1">({activeMarker.team})</span>}
+                              </p>
                               <p className="text-xs text-slate-400 whitespace-nowrap">Target: {activeMarker.target}</p>
-                              <div className="flex items-center gap-2 justify-center mt-2">
+                              {activeMarker.location && <p className="text-[10px] text-slate-500">{activeMarker.location}</p>}
+                              <div className="flex flex-col gap-1 items-center mt-2">
                                 <Badge variant="outline" className={cn("text-[10px] border-none px-1.5", statusColor.split(' ')[0], "text-white")}>
                                   {getStatusText(activeMarker.status)}
                                 </Badge>
-                                {activeMarker.note && <span className="text-[10px] text-slate-500 italic max-w-[150px] truncate">{activeMarker.note}</span>}
+                                {activeMarker.note && (
+                                  <span className="text-[10px] text-amber-400 italic max-w-[150px] whitespace-normal break-words leading-tight">
+                                    "{activeMarker.note}"
+                                  </span>
+                                )}
                               </div>
                             </div>
                             {/* Arrow - Smart Position */}

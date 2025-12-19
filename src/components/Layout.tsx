@@ -2,88 +2,68 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import {
-  Building2,
-  Home,
   Mail,
   Bell,
   Calendar,
   MapPin,
   LogOut,
   Gift,
-  LayoutDashboard,
   User,
-  Menu,
   ChevronLeft,
   ChevronRight,
-  Cat,
-  Archive
+  ShieldAlert
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import AnnexVisitModal from '@/components/modals/AnnexVisitModal';
-import FoxCounselingModal from '@/components/modals/FoxCounselingModal';
-import StorageRentalModal from '@/components/modals/StorageRentalModal';
 
-interface LayoutProps {
-  children: React.ReactNode;
-  hideSidebar?: boolean;
-}
-
-const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userName, team, rank, points, logout, isNavigationDisabled } = useUserStore();
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const { userName, rank, team, employeeId, points, logout, securityMessageTriggered, isNavigationDisabled, securityTimerActive, triggerSecurityMessage, isSecurityMessageRead, isSecurityToastShown, setSecurityToastShown } = useUserStore();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
-  // Modal states for Quick Links
-  const [showAnnexVisit, setShowAnnexVisit] = useState(false);
-  const [showFoxCounseling, setShowFoxCounseling] = useState(false);
-  const [showStorageRental, setShowStorageRental] = useState(false);
+  // Security Timer Logic (30s delay)
+  React.useEffect(() => {
+    if (securityTimerActive) {
+      const timer = setTimeout(() => {
+        triggerSecurityMessage();
+      }, 30000); // 30 seconds delay
+      return () => clearTimeout(timer);
+    }
+  }, [securityTimerActive, triggerSecurityMessage]);
 
-  const isSoleum = userName === '김솔음';
+  // Toast Auto-hide Logic (5s display) + Show handling
+  React.useEffect(() => {
+    if (securityMessageTriggered && !isSecurityToastShown) {
+      setShowToast(true);
+      setSecurityToastShown(); // Mark as shown to prevent repeat on nav
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 5000); // 5 seconds display
+      return () => clearTimeout(timer);
+    }
+  }, [securityMessageTriggered, isSecurityToastShown, setSecurityToastShown]);
+
+  const menuItems = [
+    { icon: Bell, label: '공지사항', path: '/notices' },
+    { icon: Mail, label: '쪽지함', path: '/messages', badge: (securityMessageTriggered && !isSecurityMessageRead) ? '+1' : undefined },
+    { icon: Calendar, label: '일정 관리', path: '/calendar' },
+    { icon: MapPin, label: '시설 안내도', path: '/floor-map' },
+    { icon: ShieldAlert, label: '담당 어둠 배정', path: '/shadow-assignment' },
+    { icon: Gift, label: '복지몰', path: '/welfare-mall' },
+    { icon: User, label: 'HR 포털', path: '/hr-portal' },
+  ];
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  const menuItems = [
-    { icon: LayoutDashboard, label: '대시보드', path: '/dashboard' },
-    { icon: Bell, label: '공지사항', path: '/notices' },
-    { icon: Mail, label: '쪽지함', path: '/messages' },
-    { icon: Calendar, label: '일정 관리', path: '/calendar' },
-    { icon: MapPin, label: '시설 안내', path: '/floor-map' },
-    { icon: Gift, label: '복지몰', path: '/welfare-mall' },
-  ];
-
-  const quickLinks = [
-    {
-      icon: Building2,
-      label: '별관 방문',
-      action: () => setShowAnnexVisit(true),
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100'
-    },
-    {
-      icon: Cat,
-      label: '여우상담실',
-      action: () => setShowFoxCounseling(true),
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100'
-    },
-    {
-      icon: Archive,
-      label: '대여창고',
-      action: () => setShowStorageRental(true),
-      color: 'text-slate-600',
-      bgColor: 'bg-slate-100'
-    }
-  ];
-
-  const extraSidebarClasses = isNavigationDisabled ? "pointer-events-none grayscale opacity-20" : "";
+  const hideSidebar = false;
+  const extraSidebarClasses = isNavigationDisabled ? "pointer-events-none grayscale opacity-50" : "";
 
   return (
     <div className="flex h-screen bg-secondary/30 overflow-hidden font-sans">
@@ -96,9 +76,13 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
             extraSidebarClasses
           )}
         >
+          {/* Sidebar Header */}
           <div className={cn("h-16 flex items-center px-4 border-b border-border", isCollapsed ? "justify-center" : "justify-between")}>
             {!isCollapsed && (
-              <div className="flex items-center gap-3 overflow-hidden">
+              <div
+                className="flex items-center gap-3 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigate('/dashboard')}
+              >
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
                   <span className="text-lg font-bold text-primary-foreground leading-none pb-0.5">백</span>
                 </div>
@@ -106,7 +90,10 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
               </div>
             )}
             {isCollapsed && (
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+              <div
+                className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-primary/20 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigate('/dashboard')}
+              >
                 <span className="text-lg font-bold text-primary-foreground leading-none pb-0.5">백</span>
               </div>
             )}
@@ -120,6 +107,7 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
             </Button>
           </div>
 
+          {/* Sidebar Menu */}
           <ScrollArea className="flex-1 py-4">
             <TooltipProvider delayDuration={0}>
               <div className="space-y-1 px-2">
@@ -130,7 +118,7 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
                         <Button
                           variant={'ghost'}
                           className={cn(
-                            "w-full justify-center h-10 transition-all duration-200",
+                            "w-full justify-center h-10 transition-all duration-200 relative",
                             location.pathname.startsWith(item.path)
                               ? "bg-primary/10 text-primary"
                               : "text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -138,10 +126,11 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
                           onClick={() => navigate(item.path)}
                         >
                           <item.icon className="h-5 w-5" />
+                          {item.badge && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="font-medium bg-slate-900 text-white border-slate-800 ml-2">
-                        {item.label}
+                        {item.label} {item.badge && `(${item.badge})`}
                       </TooltipContent>
                     </Tooltip>
                   ) : (
@@ -149,7 +138,7 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
                       key={item.path}
                       variant={'ghost'}
                       className={cn(
-                        "w-full justify-start gap-3 h-10 text-sm font-medium transition-all duration-200 px-3",
+                        "w-full justify-start gap-3 h-10 text-sm font-medium transition-all duration-200 px-3 relative",
                         location.pathname.startsWith(item.path)
                           ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -157,65 +146,20 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
                       onClick={() => navigate(item.path)}
                     >
                       <item.icon className={cn("h-4 w-4", location.pathname.startsWith(item.path) ? "text-primary" : "text-muted-foreground")} />
-                      {item.label}
+                      <span className="truncate">{item.label}</span>
+                      {item.badge && (
+                        <span className="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
+                          {item.badge}
+                        </span>
+                      )}
                     </Button>
                   )
                 ))}
               </div>
             </TooltipProvider>
-
-            {/* Quick Links Section */}
-            {!isCollapsed && quickLinks.length > 0 && (
-              <div className="mt-6 px-4 animate-fade-in">
-                <p className="text-xs font-semibold text-muted-foreground mb-2 px-2 uppercase tracking-wider">Quick Links</p>
-                <div className="space-y-1">
-                  {quickLinks.map((link, idx) => (
-                    <Button
-                      key={idx}
-                      variant="ghost"
-                      className="w-full justify-start gap-3 h-9 text-sm text-slate-600 hover:text-slate-900 px-3"
-                      onClick={link.action}
-                    >
-                      <div className={cn("w-5 h-5 rounded-full flex items-center justify-center shrink-0", link.bgColor)}>
-                        <link.icon className={cn("h-3 w-3", link.color)} />
-                      </div>
-                      {link.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-            {isCollapsed && quickLinks.length > 0 && (
-              <>
-                <Separator className="my-4 mx-2 w-auto bg-slate-200" />
-                <div className="space-y-1 px-2">
-                  <TooltipProvider delayDuration={0}>
-                    {quickLinks.map((link, idx) => (
-                      <Tooltip key={idx} side="right">
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-center h-10"
-                            onClick={link.action}
-                          >
-                            <div className={cn("w-6 h-6 rounded-full flex items-center justify-center shrink-0", link.bgColor)}>
-                              <link.icon className={cn("h-3.5 w-3.5", link.color)} />
-                            </div>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="right" className="font-medium bg-slate-900 text-white border-slate-800 ml-2">
-                          {link.label}
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </TooltipProvider>
-                </div>
-              </>
-            )}
-
           </ScrollArea>
 
-          {/* User Profile Section in LNB */}
+          {/* User Profile Section */}
           <div className={cn(
             "border-t border-border bg-background/50 backdrop-blur-sm transition-all duration-300",
             isCollapsed ? "p-2" : "p-4"
@@ -229,6 +173,7 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground truncate">{userName} {rank}</p>
                     <p className="text-xs text-muted-foreground truncate">{team}</p>
+
                   </div>
                 </div>
                 <div className="bg-secondary/50 rounded-lg p-3 mb-3">
@@ -257,7 +202,8 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
                     </TooltipTrigger>
                     <TooltipContent side="right" className="ml-2 mb-2 p-3 min-w-[150px]">
                       <p className="font-bold">{userName} {rank}</p>
-                      <p className="text-xs text-muted-foreground mb-2">{team}</p>
+                      <p className="text-xs text-muted-foreground">{team}</p>
+
                       <div className="flex justify-between text-xs border-t border-slate-700 pt-2 mt-1">
                         <span>Points</span>
                         <span className="text-primary font-bold">{points.toLocaleString()}</span>
@@ -278,9 +224,9 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
           </div>
         </aside>
       )}
+
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
-        {/* Scrollable Content (Header removed as per request) */}
         <ScrollArea className="flex-1 bg-secondary/30">
           <div className="p-6 md:p-8 max-w-7xl mx-auto w-full animate-fade-in">
             {children}
@@ -288,10 +234,24 @@ const Layout = ({ children, hideSidebar = false }: LayoutProps) => {
         </ScrollArea>
       </main>
 
-      {/* Re-integrated Modals to be accessible anywhere in Layout */}
-      <AnnexVisitModal open={showAnnexVisit} onClose={() => setShowAnnexVisit(false)} />
-      <FoxCounselingModal open={showFoxCounseling} onClose={() => setShowFoxCounseling(false)} />
-      <StorageRentalModal open={showStorageRental} onClose={() => setShowStorageRental(false)} />
+      {/* Security Message Toast */}
+      {showToast && (location.pathname === '/dashboard') && (
+        <div className="fixed bottom-8 right-8 z-[100] animate-slide-up-fade">
+          <div
+            className="bg-slate-900 text-white p-4 rounded-lg shadow-2xl border border-slate-700 flex items-center gap-4 cursor-pointer hover:bg-slate-800 transition-colors max-w-sm"
+            onClick={() => navigate('/messages/security-breach')}
+          >
+            <div className="w-10 h-10 rounded-full bg-red-600/20 flex items-center justify-center shrink-0 animate-pulse">
+              <Mail className="h-5 w-5 text-red-500" />
+            </div>
+            <div>
+              <p className="font-bold text-sm text-red-400 mb-0.5">새로운 쪽지가 도착했습니다</p>
+              <p className="text-xs text-slate-400">보낸이: 정보보안팀</p>
+            </div>
+            <div className="h-2 w-2 rounded-full bg-red-500 animate-ping ml-2" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

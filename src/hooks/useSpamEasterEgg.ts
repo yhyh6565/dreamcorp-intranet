@@ -26,7 +26,7 @@ ${'고통이다. 고통이야. 고통. 고통. 고통. 고통이다.\n'.repeat(2
 
 export const useSpamEasterEgg = (id: string | undefined) => {
     const navigate = useNavigate();
-    const { deleteSpamMessage, corruptUserName, setNavigationDisabled } = useUserStore();
+    const { deleteSpamMessage, corruptUserName, setNavigationDisabled, startSecurityTimer } = useUserStore();
 
     const [showRetyping, setShowRetyping] = useState(false);
     const [replaceIndex, setReplaceIndex] = useState(0);
@@ -46,6 +46,7 @@ export const useSpamEasterEgg = (id: string | undefined) => {
             (entries) => {
                 if (entries[0].isIntersecting) {
                     setCanTriggerBackEasterEgg(true);
+                    setNavigationDisabled(true); // Lock sidebar navigation when 'Thank you' is seen
                 }
             },
             { threshold: 0.5 }
@@ -98,6 +99,8 @@ export const useSpamEasterEgg = (id: string | undefined) => {
             setShowBlackScreen(true);
             setTimeout(() => {
                 setShowFadeIn(true);
+                // Start security timer right when fading in to dashboard
+                startSecurityTimer();
                 setTimeout(() => {
                     setNavigationDisabled(false); // Re-enable navigation before leaving
                     navigate('/dashboard');
@@ -110,10 +113,11 @@ export const useSpamEasterEgg = (id: string | undefined) => {
             clearTimeout(endTimer);
             setNavigationDisabled(false); // Ensure navigation is re-enabled on cleanup
         };
-    }, [showRetyping, deleteSpamMessage, corruptUserName, navigate, setNavigationDisabled]);
+    }, [showRetyping, deleteSpamMessage, corruptUserName, navigate, setNavigationDisabled, startSecurityTimer]);
 
     const triggerEasterEgg = () => {
-        if (id === '2') {
+        // Only trigger if ID is 2 AND user has scrolled to the bottom (canTriggerBackEasterEgg)
+        if (id === '2' && canTriggerBackEasterEgg) {
             setHideBackButton(true);
             setShowRetyping(true);
             setNavigationDisabled(true); // Disable navigation when easter egg is triggered

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useUserStore } from '@/store/userStore';
 
 interface JumpscareOverlayProps {
@@ -196,14 +197,18 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
     }
   }, [phase]);
 
+  // ... (imports remain)
+
+  // ... (component logic remains)
+
   if (phase === 'end') return null;
 
   // Terminal phase UI
   if (phase === 'terminal') {
-    return (
-      <div className="fixed inset-0 z-[100] bg-black/80 overflow-hidden font-mono flex items-center justify-center p-4">
+    return createPortal(
+      <div className="fixed inset-0 z-[9999] bg-black/30 overflow-hidden font-mono flex items-center justify-center p-4">
         {/* Terminal Window */}
-        <div className="w-full max-w-4xl h-[80vh] bg-[#1e1e1e]/95 rounded-lg shadow-2xl border border-gray-700 flex flex-col overflow-hidden backdrop-blur-sm">
+        <div className="w-full max-w-4xl h-[80vh] bg-[#1e1e1e] rounded-lg shadow-2xl border border-gray-700 flex flex-col overflow-hidden">
           {/* Window Title Bar */}
           <div className="flex items-center justify-between px-4 py-2 bg-[#323232] border-b border-gray-600">
             {/* macOS style buttons */}
@@ -243,12 +248,13 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  return (
-    <div className="fixed inset-0 z-[100] bg-black overflow-hidden flex items-start justify-start">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] bg-black overflow-hidden flex items-start justify-start">
       {(phase === 'typing-nugoo' || phase === 'typing-die') && (
         <div
           ref={textContainerRef}
@@ -268,7 +274,8 @@ const JumpscareOverlay = ({ onComplete }: JumpscareOverlayProps) => {
           </p>
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 };
 

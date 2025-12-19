@@ -7,6 +7,8 @@ import LoginGateway from "./pages/LoginGateway";
 import Dashboard from "./pages/Dashboard";
 import WelfareMall from "./pages/WelfareMall";
 import FloorMap from "./pages/FloorMap";
+import ShadowAssignment from "./pages/ShadowAssignment";
+import MyShadows from "./pages/MyShadows";
 import CalendarPage from "./pages/CalendarPage";
 import NoticeList from "./pages/NoticeList";
 import NoticeDetail from "./pages/NoticeDetail";
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/welfare-mall" element={<WelfareMall />} />
           <Route path="/floor-map" element={<FloorMap />} />
+          <Route path="/shadow-assignment" element={<ShadowAssignment />} />
+          <Route path="/my-shadows" element={<MyShadows />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/notices" element={<NoticeList />} />
           <Route path="/notices/:id" element={<NoticeDetail />} />

@@ -10,6 +10,33 @@ import { notices } from '@/data/notices';
 const NoticeList = () => {
   const navigate = useNavigate();
 
+  // Sort notices: Important/Emergency first, then by date descending
+  const sortedNotices = [...notices].sort((a, b) => {
+    // Check for pinning conditions
+    const isAPinned = a.isImportant || a.title.includes('[긴급]') || a.title.includes('[필독]');
+    const isBPinned = b.isImportant || b.title.includes('[긴급]') || b.title.includes('[필독]');
+
+    if (isAPinned && !isBPinned) return -1;
+    if (!isAPinned && isBPinned) return 1;
+
+    // Secondary sort by date (newest first)
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
+  // Limit to 8 items per page
+  const ITEMS_PER_PAGE = 8;
+  const displayedNotices = sortedNotices.slice(0, ITEMS_PER_PAGE);
+  const emptyRows = Math.max(0, ITEMS_PER_PAGE - displayedNotices.length);
+
+  const getBadgeStyle = (category: string, isPinned: boolean) => {
+    // Red style for Security, Field, and Pinned items
+    if (category === '보안' || category === '현장' || isPinned) {
+      return 'bg-red-100 text-red-600 hover:bg-red-200 border-red-100';
+    }
+    // Blue/Slate style for others
+    return 'bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-100';
+  };
+
   return (
     <Layout>
       <div className="max-w-6xl mx-auto space-y-6">
@@ -47,45 +74,50 @@ const NoticeList = () => {
 
               {/* Table Body */}
               <div className="divide-y divide-border">
-                {notices.map((notice, index) => (
-                  <div
-                    key={notice.id}
-                    onClick={() => navigate(`/notices/${notice.id}`)}
-                    className={`flex items-center py-4 px-6 cursor-pointer hover:bg-blue-50/50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
-                      }`}
-                  >
-                    <div className="w-16 text-center text-slate-400 shrink-0 font-mono text-xs">
-                      {notices.length - index}
+                {displayedNotices.map((notice, index) => {
+                  const isPinned = notice.isImportant || notice.title.includes('[긴급]') || notice.title.includes('[필독]');
+                  return (
+                    <div
+                      key={notice.id}
+                      onClick={() => navigate(`/notices/${notice.id}`)}
+                      className={`flex items-center py-3 px-6 cursor-pointer hover:bg-blue-50/50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
+                        } ${isPinned ? 'bg-red-50/10' : ''}`}
+                    >
+                      <div className="w-16 text-center text-slate-400 shrink-0 font-mono text-xs">
+                        {/* Show Pinned Icon or Number */}
+                        {isPinned ? (
+                          <span className="font-bold text-red-500">공지</span>
+                        ) : (
+                          notices.length - index
+                        )}
+                      </div>
+                      <div className="w-24 text-center shrink-0">
+                        <Badge
+                          variant="secondary"
+                          className={`font-normal ${getBadgeStyle(notice.category, isPinned)}`}
+                        >
+                          {notice.category}
+                        </Badge>
+                      </div>
+                      <div className={`flex-1 px-4 font-medium transition-colors truncate ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
+                        {notice.title}
+                      </div>
+                      <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">
+                        {notice.author}
+                      </div>
+                      <div className="w-24 text-center text-slate-400 shrink-0 text-xs">
+                        {notice.date}
+                      </div>
                     </div>
-                    <div className="w-24 text-center shrink-0">
-                      <Badge
-                        variant="secondary"
-                        className={`font-normal ${notice.tag === '필독'
-                            ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                          }`}
-                      >
-                        {notice.tag}
-                      </Badge>
-                    </div>
-                    <div className="flex-1 px-4 font-medium text-slate-700 group-hover:text-primary transition-colors truncate">
-                      {notice.title}
-                    </div>
-                    <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">
-                      {notice.author}
-                    </div>
-                    <div className="w-24 text-center text-slate-400 shrink-0 text-xs">
-                      {notice.date}
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
 
                 {/* Empty Rows Filler (Visual) */}
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={`empty-${i}`} className="flex items-center py-4 px-6 opacity-40">
+                {Array.from({ length: emptyRows }).map((_, i) => (
+                  <div key={`empty-${i}`} className="flex items-center py-3 px-6 opacity-40">
                     <div className="w-16 text-center text-slate-300 shrink-0 font-mono text-xs">-</div>
                     <div className="w-24 text-center shrink-0"></div>
-                    <div className="flex-1 px-4 text-slate-300">표시할 내용이 없습니다.</div>
+                    <div className="flex-1 px-4 text-slate-300"></div>
                     <div className="w-32 text-center shrink-0 hidden md:block"></div>
                     <div className="w-24 text-center shrink-0"></div>
                   </div>

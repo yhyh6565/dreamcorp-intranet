@@ -1,7 +1,24 @@
 import MessageLayout from '@/components/MessageLayout';
 import { Mail } from 'lucide-react';
+import { useUserStore } from '@/store/userStore';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getMessages } from '@/data/messages';
 
 const MessageList = () => {
+  const navigate = useNavigate();
+  const { userName, team, rank, isLoggedIn, securityMessageTriggered } = useUserStore();
+  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/');
+    }
+  }, [isLoggedIn, navigate]);
+
+  const messages = getMessages(userName, team, rank, securityMessageTriggered);
+
   return (
     <MessageLayout>
       <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 animate-fade-in">

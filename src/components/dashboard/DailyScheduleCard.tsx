@@ -7,7 +7,7 @@ const DailyScheduleCard = () => {
 
     return (
         <Card
-            className="md:col-span-1 border-none shadow-md bg-gradient-to-br from-primary to-blue-600 text-white relative overflow-hidden cursor-pointer group hover:scale-[1.02] transition-transform duration-300"
+            className="md:col-span-1 border-none shadow-md bg-gradient-to-br from-primary to-blue-600 text-white relative overflow-hidden cursor-pointer group hover:scale-[1.02] transition-transform duration-300 h-full"
             onClick={() => navigate('/calendar')}
         >
             <div className="absolute top-[-20%] right-[-20%] w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors" />

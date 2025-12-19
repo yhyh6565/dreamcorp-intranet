@@ -1,46 +1,74 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, ChevronRight, Clock } from 'lucide-react';
+import { MapPin, ChevronRight, Clock, ShieldAlert } from 'lucide-react';
 import { formatDate, getRelativeDate } from '@/utils/dateUtils';
+import { useShadowStore } from '@/store/shadowStore';
+import { useUserStore } from '@/store/userStore';
 
-interface FacilityStatusCardProps {
-    isSoleum: boolean;
-}
-
-const FacilityStatusCard = ({ isSoleum }: FacilityStatusCardProps) => {
+const FacilityStatusCard = () => {
     const navigate = useNavigate();
+    const { shadows } = useShadowStore();
+    const { userName } = useUserStore();
+
+    const myShadows = shadows.filter(s => s.assigneeName === userName);
+    let hasShadow = myShadows.length > 0;
+    let mainShadow = hasShadow ? myShadows[0] : null;
+    let displayCount = myShadows.length;
+
+
 
     return (
         <Card
-            className="md:col-span-2 group overflow-hidden relative border-none shadow-md bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
-            onClick={() => navigate('/floor-map')}
+            className="group overflow-hidden relative border-none shadow-md bg-white hover:shadow-lg transition-all duration-300 cursor-pointer h-full"
+            onClick={() => navigate(hasShadow ? '/my-shadows' : '/shadow-assignment')}
         >
-            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+            <div className={`absolute top-0 left-0 w-1 h-full ${hasShadow ? 'bg-blue-500' : 'bg-red-500'}`} />
             <CardHeader className="pb-2">
                 <CardTitle className="flex items-center justify-between text-base font-medium text-slate-500 group-hover:text-blue-600 transition-colors">
                     <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span>담당 관리 구역</span>
+                        {hasShadow ? (
+                            <MapPin className="h-4 w-4 text-primary" />
+                        ) : (
+                            <ShieldAlert className="h-4 w-4 text-red-500" />
+                        )}
+                        <span>담당 어둠</span>
+                        {hasShadow && (
+                            <Badge variant="secondary" className="ml-2 bg-slate-100 text-slate-600">
+                                {displayCount}
+                            </Badge>
+                        )}
                     </div>
                     <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="flex items-end justify-between">
-                    <div>
-                        <h3 className="text-2xl font-bold text-slate-900 group-hover:text-primary transition-colors">
-                            {isSoleum ? '양자택일' : '웅얼거리는 맨홀'}
+                    <div className="min-w-0 flex-1 mr-2">
+                        {hasShadow && <div className="text-xs font-mono text-slate-500 mb-1">{mainShadow?.code}</div>}
+                        <h3 className={`text-2xl font-bold transition-colors truncate ${hasShadow ? 'text-slate-900 group-hover:text-primary' : 'text-red-900/80'}`}>
+                            {hasShadow
+                                ? (myShadows.length > 1 ? `${mainShadow!.name} 외 ${myShadows.length - 1}개` : mainShadow!.name)
+                                : '담당 어둠 등록 요망'}
                         </h3>
                         <p className="text-sm text-slate-400 mt-1">
-                            {isSoleum ? '식별코드: Qterw-F-2073' : '위치: 지하 2층 B-04 구역'}
+                            {hasShadow ? `위치: ${mainShadow!.locationText}` : '관리물이 배정되지 않았습니다.'}
                         </p>
                     </div>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">안정</Badge>
+                    {hasShadow ? (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">안정</Badge>
+                    ) : (
+                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 animate-pulse">미배정</Badge>
+                    )}
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-400">
                     <Clock className="h-3 w-3" />
-                    <span>마지막 점검: {formatDate(getRelativeDate(-5))} 14:30</span>
+                    <span>
+                        {hasShadow
+                            ? `마지막 점검: ${formatDate(getRelativeDate(-5))} 14:30`
+                            : '즉시 담당 어둠 배정 페이지에서 등록을 진행하십시오.'
+                        }
+                    </span>
                 </div>
             </CardContent>
         </Card>

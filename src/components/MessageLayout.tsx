@@ -15,9 +15,9 @@ interface MessageLayoutProps {
 const MessageLayout = ({ children }: MessageLayoutProps) => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { userName, team, rank, spamMessageDeleted, isNavigationDisabled } = useUserStore();
+    const { userName, team, rank, spamMessageDeleted, isNavigationDisabled, securityMessageTriggered } = useUserStore();
 
-    const allMessages = getMessages(userName, team, rank);
+    const allMessages = getMessages(userName, team, rank, securityMessageTriggered);
     const messages = spamMessageDeleted
         ? allMessages.filter(m => m.id !== '2')
         : allMessages;
@@ -55,7 +55,7 @@ const MessageLayout = ({ children }: MessageLayoutProps) => {
                                         key={message.id}
                                         onClick={() => navigate(`/messages/${message.id}`)}
                                         className={cn(
-                                            "flex flex-col gap-1 p-4 cursor-pointer hover:bg-white transition-colors border-l-4 border-l-transparent",
+                                            "flex flex-col gap-1 p-4 cursor-pointer hover:bg-white transition-colors border-l-4 border-l-transparent min-w-0",
                                             id === message.id
                                                 ? "bg-white border-l-primary shadow-[inset_0_1px_4px_rgba(0,0,0,0.05)]"
                                                 : "text-muted-foreground hover:border-l-slate-300",

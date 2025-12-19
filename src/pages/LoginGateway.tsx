@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,11 @@ const LoginGateway = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'id' | 'password'>('id');
   const navigate = useNavigate();
-  const login = useUserStore((state) => state.login);
+  const { login, logout } = useUserStore();
+
+  useEffect(() => {
+    logout();
+  }, [logout]);
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();

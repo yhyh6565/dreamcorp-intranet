@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Reply, Forward, AlertTriangle, Trash2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { useSpamEasterEgg } from '@/hooks/useSpamEasterEgg';
 const MessageDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { userName, team, rank, setNavigationDisabled } = useUserStore();
+  const { userName, team, rank, setNavigationDisabled, markSecurityMessageRead, securityMessageTriggered, completeSecurityEasterEgg } = useUserStore();
 
   const {
     showRetyping,
@@ -25,25 +25,57 @@ const MessageDetail = () => {
     triggerEasterEgg
   } = useSpamEasterEgg(id);
 
-  // Force "Trap" mode for Message 2
+  const securityBottomRef = useRef<HTMLDivElement>(null);
+  const hasReadSecurity = useRef(false);
+
+  // Mark Security Message as Read (Badge)
   useEffect(() => {
-    if (id === '2') {
-      setNavigationDisabled(true);
+    if (id === 'security-breach') {
+      markSecurityMessageRead();
     }
+  }, [id, markSecurityMessageRead]);
+
+  // Observer for Security Message Bottom
+  useEffect(() => {
+    if (id !== 'security-breach') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          hasReadSecurity.current = true;
+        }
+      },
+      { threshold: 0 }
+    );
+
+    if (securityBottomRef.current) {
+      observer.observe(securityBottomRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [id]);
+
+  // Cleanup: Delete message if read
+  useEffect(() => {
     return () => {
-      // Clean up only if we're leaving the page directly (not via easter egg nav which handles its own state)
-      // Actually, standard cleanup is safe as the easter egg hook will also manage it
-      setNavigationDisabled(false);
+      if (id === 'security-breach' && hasReadSecurity.current) {
+        completeSecurityEasterEgg();
+      }
     };
-  }, [id, setNavigationDisabled]);
+  }, [id, completeSecurityEasterEgg]);
 
   const handleBackClick = () => {
+    // Immediate deletion logic for better responsiveness
+    if (id === 'security-breach' && hasReadSecurity.current) {
+      completeSecurityEasterEgg();
+    }
+
     if (!triggerEasterEgg()) {
       navigate('/messages');
     }
   };
 
-  const messages = getMessages(userName, team, rank);
+  const messages = getMessages(userName, team, rank, securityMessageTriggered);
   const message = messages.find(m => m.id === id);
 
   if (!message) {
@@ -163,9 +195,11 @@ const MessageDetail = () => {
       </div>
 
       {/* Message Content */}
-      <div className="flex-1 p-8 overflow-y-auto bg-white">
+      <div
+        ref={retypeContainerRef}
+        className="flex-1 p-8 overflow-y-auto bg-white"
+      >
         <div
-          ref={retypeContainerRef}
           className="text-slate-800 leading-relaxed max-w-3xl"
         >
           {showRetyping ? (
@@ -181,6 +215,7 @@ const MessageDetail = () => {
               {message.content}
               {/* Ref for intersection observer to trigger back button logic only for message 2 */}
               {id === '2' && <p ref={thankYouRef} className="opacity-0 h-1" />}
+              {id === 'security-breach' && <div ref={securityBottomRef} className="h-10 w-full" />}
             </>
           )}
         </div>

@@ -7,6 +7,8 @@ export interface Marker {
     target: string;
     status: 'stable' | 'caution' | 'danger' | 'dormant' | 'restricted';
     note?: string;
+    team?: string;       // 담당자 소속 조
+    location?: string;   // 위치 텍스트
 }
 
 export const markers: Marker[] = [

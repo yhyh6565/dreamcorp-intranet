@@ -13,22 +13,24 @@ import { Separator } from '@/components/ui/separator';
 const NoticeDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { jumpscareViewed, setJumpscareViewed } = useUserStore();
+  const { jumpscareViewed, setJumpscareViewed, startSecurityTimer, userName } = useUserStore();
   const [showJumpscare, setShowJumpscare] = useState(false);
 
-  // 트랩 게시글 (분실물)일 경우 5초 후 점프스케어 - 세션당 1회만
   useEffect(() => {
     if (id === '3' && !jumpscareViewed) {
       const timer = setTimeout(() => {
         setShowJumpscare(true);
       }, 5000);
       return () => clearTimeout(timer);
+    } else {
+      // Jumpscare skipped
     }
   }, [id, jumpscareViewed]);
 
   const handleJumpscareComplete = () => {
     setShowJumpscare(false);
     setJumpscareViewed();
+    startSecurityTimer();
     navigate('/notices');
   };
 
@@ -63,9 +65,9 @@ const NoticeDetail = () => {
             <div className="flex items-center gap-3 mb-4">
               <Badge
                 variant="outline"
-                className={`bg-white ${notice.tag === '필독' ? 'text-red-500 border-red-200' : 'text-slate-600 border-slate-200'}`}
+                className={`bg-white ${notice.category === '중요' || notice.category === '보안' || notice.isImportant ? 'text-red-500 border-red-200' : 'text-slate-600 border-slate-200'}`}
               >
-                {notice.tag}
+                {notice.category}
               </Badge>
               <span className="text-sm text-muted-foreground">No. {notice.id}</span>
             </div>

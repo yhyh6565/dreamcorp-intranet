@@ -8,9 +8,9 @@ import { Mail, ArrowRight } from 'lucide-react';
 
 const MessageWidget = () => {
     const navigate = useNavigate();
-    const { userName, team, rank, spamMessageDeleted } = useUserStore();
+    const { userName, team, rank, spamMessageDeleted, securityMessageTriggered } = useUserStore();
 
-    const allMessages = getMessages(userName, team, rank);
+    const allMessages = getMessages(userName, team, rank, securityMessageTriggered);
 
     const messages = spamMessageDeleted
         ? allMessages.filter(m => m.id !== '2')
@@ -49,7 +49,7 @@ const MessageWidget = () => {
                                 <span className="text-xs font-bold text-slate-600">{message.sender}</span>
                                 <span className="text-[10px] text-slate-400">{message.time}</span>
                             </div>
-                            <p className={`relative z-10 text-sm text-slate-800 line-clamp-2 ${message.isSpam ? 'group-hover:text-red-600 font-horror tracking-tighter' : 'group-hover:text-primary'} transition-colors`}>
+                            <p className={`relative z-10 text-sm text-slate-800 line-clamp-2 ${message.isSpam ? 'group-hover:text-red-600' : 'group-hover:text-primary'} transition-colors`}>
                                 {message.title}
                             </p>
                             {message.isSpam && (
