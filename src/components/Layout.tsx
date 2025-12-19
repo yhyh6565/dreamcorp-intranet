@@ -95,7 +95,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 onClick={() => navigate('/dashboard')}
               >
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-                  <span className="text-lg font-bold text-primary-foreground leading-none pb-0.5">백</span>
+                  <img src="/pic/logo_cloud.png" alt="Logo" className="w-[60%] h-[60%] object-contain brightness-0 invert" />
                 </div>
                 <span className="text-lg font-bold text-foreground tracking-tight whitespace-nowrap">(주)백일몽</span>
               </div>

@@ -148,8 +148,9 @@ const WelfareMall = () => {
       {/* Local Header - Minimalist */}
       <header className="h-24 sticky top-0 bg-white z-40 flex items-center justify-between px-12 border-b border-transparent transition-colors duration-300 hover:border-slate-100">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-light tracking-[0.2em] uppercase text-slate-900 cursor-default">
-            Dream Corp<span className="font-bold">Mall</span>
+          <h1 className="text-2xl font-light tracking-wide text-foreground/90 uppercase font-sans">
+            백일몽 임직원 복지몰
+            <span className="ml-2 text-xs font-bold text-primary tracking-widest border border-primary/20 px-2 py-0.5 rounded-full">PREMIUM</span>
           </h1>
         </div>
 
@@ -346,8 +347,8 @@ const WelfareMall = () => {
                 <DialogTitle>{selectedProduct.name}</DialogTitle>
                 <DialogDescription>Product details and purchase option</DialogDescription>
               </DialogHeader>
-              <div className="md:w-1/2 bg-slate-50 relative">
-                <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover mix-blend-multiply p-8" />
+              <div className="md:w-1/2 bg-slate-50 relative flex items-center justify-center">
+                <img src={selectedProduct.image} alt={selectedProduct.name} className="w-[80%] h-[80%] object-contain mix-blend-multiply" />
               </div>
               <div className="md:w-1/2 p-12 flex flex-col justify-between bg-white">
                 <div>

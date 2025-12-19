@@ -46,10 +46,14 @@ const LoginGateway = () => {
           {/* Logo Section */}
           <div className="mb-12 flex flex-col items-center animate-fade-in">
             <div className="w-16 h-16 bg-primary mb-6 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-300">
-              <span className="text-3xl font-bold text-white mb-1">백</span>
+              <img
+                src="/pic/logo_cloud.png"
+                alt="Dream Corp Logo"
+                className="w-10 h-10 object-contain brightness-0 invert"
+              />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Welcome to Dream Corp.</h1>
-            <p className="text-slate-500 font-light tracking-wide text-sm uppercase">Employee Access Terminal</p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">백일몽 주식회사에 오신 것을 확인합니다</h1>
+            <p className="text-slate-500 font-light tracking-wide text-sm uppercase">임직원 전용 인트라넷</p>
           </div>
 
           {/* Input Section */}
@@ -62,10 +66,10 @@ const LoginGateway = () => {
             >
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Identity Code</label>
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">아이디</label>
                   <Input
                     type="text"
-                    placeholder="Enter your name or ID"
+                    placeholder="이름 또는 사원번호"
                     value={id}
                     onChange={(e) => setId(e.target.value)}
                     className="h-14 bg-slate-50 border-slate-200 focus:border-primary focus:ring-primary/20 text-lg px-4 rounded-xl transition-all"
@@ -77,7 +81,7 @@ const LoginGateway = () => {
                   className="w-full h-14 text-lg font-medium rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98]"
                   disabled={!id}
                 >
-                  Next
+                  다음
                   <ChevronRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
@@ -92,13 +96,13 @@ const LoginGateway = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center px-1">
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Security Key</label>
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">비밀번호</label>
                     <button
                       type="button"
                       onClick={() => setStep('id')}
                       className="text-xs text-primary hover:underline font-medium"
                     >
-                      Change ID
+                      다시 입력
                     </button>
                   </div>
                   <Input
@@ -118,10 +122,10 @@ const LoginGateway = () => {
                   {isLoading ? (
                     <span className="flex items-center gap-2">
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Authenticating...
+                      시스템 접속 중...
                     </span>
                   ) : (
-                    'Access System'
+                    '로그인'
                   )}
                 </Button>
               </div>
@@ -131,10 +135,10 @@ const LoginGateway = () => {
           {/* Footer */}
           <div className="mt-8 text-center">
             <p className="text-[10px] text-slate-400 font-medium tracking-tight">
-              AUTHORIZED PERSONNEL ONLY • SECURE CONNECTION
+              관계자 외 접속 금지 • 보안 연결
             </p>
             <p className="text-[10px] text-slate-300 mt-1 font-light">
-              System v4.0.2 • Dream Corp Intranet
+              시스템 v4.0.2 • 백일몽 인트라넷
             </p>
           </div>
         </CardContent>
@@ -142,7 +146,7 @@ const LoginGateway = () => {
 
       {/* Footer Copyright */}
       <div className="absolute bottom-6 text-center w-full">
-        <p className="text-slate-400 text-xs font-medium">© 2024 Baekilmong Corp. All rights reserved.</p>
+        <p className="text-slate-400 text-xs font-medium">© 2024 (주)백일몽. All rights reserved.</p>
       </div>
     </div>
   );
