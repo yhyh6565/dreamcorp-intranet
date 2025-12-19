@@ -287,10 +287,9 @@ const WelfareMall = () => {
             {/* Housing Card */}
             <div className="group cursor-pointer relative overflow-hidden bg-slate-50 border border-slate-100 flex flex-col md:flex-row h-[500px]">
               <div className="md:w-1/2 bg-slate-200 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-slate-300">
-                  <Home className="h-24 w-24 opacity-20" />
-                </div>
-                <div className="absolute bottom-8 left-8">
+                <img src="/pic/사택 전경.png" alt="Office Tel" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-sm p-8 border-t border-slate-100">
                   <h2 className="text-4xl font-light text-slate-900 tracking-tight">Dream Stay</h2>
                   <p className="text-slate-500 mt-2">Premium Housing Service</p>
                 </div>

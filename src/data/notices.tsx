@@ -16,7 +16,7 @@ export interface Notice {
 export const notices: Notice[] = [
   // 1. [현장/긴급] - Pinned
   {
-    id: '100',
+    id: '4',
     category: '현장',
     title: '[긴급] 안전 수치 불안정에 따른 별관 폐쇄 안내',
     author: '현장통제실',
@@ -47,7 +47,7 @@ export const notices: Notice[] = [
 
   // 2. [복지]
   {
-    id: '99',
+    id: '5',
     category: '복지',
     title: '[식단] 10월 5주차 프리미엄 구내식당 메뉴 안내 (셰프 특선 포함)',
     author: '영양사',
@@ -76,7 +76,7 @@ export const notices: Notice[] = [
 
   // 3. [자재]
   {
-    id: '98',
+    id: '6',
     category: '자재',
     title: '대(對)어둠용 억제제(Type-C) 불출 프로세스 변경 안내',
     author: '자재관리팀',
@@ -108,7 +108,7 @@ export const notices: Notice[] = [
 
   // 4. [총무]
   {
-    id: '97',
+    id: '7',
     category: '총무',
     title: '동절기 대비 개인 전열기구 사용 금지 및 집중 단속 안내',
     author: '총무팀',
@@ -141,7 +141,7 @@ export const notices: Notice[] = [
 
   // 5. [보안]
   {
-    id: '96',
+    id: '8',
     category: '보안',
     title: '사내 보안 프로그램 필수 업데이트 미이행자 조치 예고',
     author: '정보보안팀',

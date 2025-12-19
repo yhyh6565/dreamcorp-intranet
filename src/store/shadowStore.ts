@@ -32,12 +32,12 @@ const initialShadows: ShadowEntity[] = [
     },
     {
         code: 'Qterw-E-2884', name: '거울 속의 낯선 얼굴', grade: 'E',
-        locationText: '본관 10F 화장실', floor: 10, coordinates: { x: 90, y: 90 },
+        locationText: '본관 10F 화장실', floor: 10, coordinates: { x: 80, y: 80 },
         assigneeName: null, assigneeTeam: null, isAssigned: false, note: ''
     },
     {
         code: 'Qterw-E-1002', name: '빈 회의실의 난상토론', grade: 'E',
-        locationText: '본관 13F 응접실', floor: 13, coordinates: { x: 50, y: 80 },
+        locationText: '본관 13F 응접실', floor: 13, coordinates: { x: 40, y: 80 },
         assigneeName: null, assigneeTeam: null, isAssigned: false, note: '자정 이후 발생'
     },
     {
@@ -52,7 +52,7 @@ const initialShadows: ShadowEntity[] = [
     },
     {
         code: 'Qterw-F-6879', name: '발신자 표시 제한', grade: 'F',
-        locationText: '본관 14F 회의실', floor: 14, coordinates: { x: 90, y: 90 },
+        locationText: '본관 14F 회의실', floor: 14, coordinates: { x: 60, y: 20 },
         assigneeName: null, assigneeTeam: null, isAssigned: false, note: ''
     },
     {

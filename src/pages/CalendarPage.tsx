@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { formatDate, isWeekend, isToday, isHoliday, getLastFridayOfMonth, getRandomAnomaly, getRelativeDate } from '@/utils/dateUtils';
+import { formatDate, isWeekend, isHoliday, isToday, getLastFridayOfMonth, getRandomAnomaly, getRelativeDate } from '@/utils/dateUtils';
+import { generateSchedule } from '@/utils/scheduleUtils';
+import { useShadowStore } from '@/store/shadowStore';
 import Layout from '@/components/Layout';
 import { cn } from '@/lib/utils';
 
@@ -18,8 +19,8 @@ interface CalendarEvent {
 }
 
 const CalendarPage = () => {
-  const navigate = useNavigate();
   const { userName } = useUserStore();
+  const { shadows } = useShadowStore();
   const [currentDate, setCurrentDate] = useState(new Date());
   const isSoleum = userName === '김솔음';
 
@@ -47,8 +48,12 @@ const CalendarPage = () => {
       type: 'company'
     });
 
-    // 내일 - 격리 실패 대응 미션 (랜덤 괴담)
-    const tomorrow = getRelativeDate(1);
+    // 내일 - 격리 실패 대응 미션 (랜덤 괴담) - 주말/휴일 제외
+    let tomorrow = getRelativeDate(1);
+    while (isWeekend(tomorrow) || isHoliday(tomorrow)) {
+      tomorrow = new Date(tomorrow.setDate(tomorrow.getDate() + 1));
+    }
+
     if (tomorrow.getMonth() === month && tomorrow.getFullYear() === year) {
       const randomAnomaly = getRandomAnomaly();
       generatedEvents.push({
@@ -60,8 +65,11 @@ const CalendarPage = () => {
       });
     }
 
-    // 오늘 기준 정기 순찰 (3일 후)
-    const patrolDate = getRelativeDate(3);
+    // 오늘 기준 정기 순찰 (3일 후) - 주말/휴일 제외
+    let patrolDate = getRelativeDate(3);
+    while (isWeekend(patrolDate) || isHoliday(patrolDate)) {
+      patrolDate = new Date(patrolDate.setDate(patrolDate.getDate() + 1));
+    }
     if (patrolDate.getMonth() === month && patrolDate.getFullYear() === year) {
       generatedEvents.push({
         id: `patrol-${year}-${month}`,
@@ -86,8 +94,39 @@ const CalendarPage = () => {
       }
     }
 
-    return generatedEvents;
-  }, [currentDate, isSoleum]);
+    // Assigned Shadow Schedules
+    const myShadows = shadows.filter(s => s.assigneeName === userName);
+    myShadows.forEach(shadow => {
+      const schedule = generateSchedule(shadow);
+      schedule.forEach(item => {
+        // Only add 'upcoming' or 'future' events to the calendar (not completed ones)
+        if (item.status !== 'completed' && item.date.getMonth() === month && item.date.getFullYear() === year) {
+          generatedEvents.push({
+            id: `shadow-${shadow.code}-${item.id}`,
+            date: item.date,
+            title: `[담당] ${shadow.name} - ${item.title}`,
+            type: 'mission',
+            time: item.timeStr.replace(' 예정', '')
+          });
+        }
+      });
+    });
+
+    // Sort events by time
+    // Helper to convert time string to comparable number (minutes)
+    const getTimeValue = (timeStr?: string) => {
+      if (!timeStr) return 9999; // No time -> Last
+      if (timeStr.includes('오전')) return 540; // '오전' -> 09:00 (540 min)
+      if (timeStr.includes('오후')) return 840; // '오후' -> 14:00 (840 min)
+      const parts = timeStr.split(':');
+      if (parts.length === 2) {
+        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      }
+      return 9999;
+    };
+
+    return generatedEvents.sort((a, b) => getTimeValue(a.time) - getTimeValue(b.time));
+  }, [currentDate, isSoleum, shadows, userName]);
 
   // Generate calendar grid
   const calendarGrid = useMemo(() => {

@@ -27,6 +27,8 @@ const NoticeDetail = () => {
     }
   }, [id, jumpscareViewed]);
 
+
+
   const handleJumpscareComplete = () => {
     setShowJumpscare(false);
     setJumpscareViewed();

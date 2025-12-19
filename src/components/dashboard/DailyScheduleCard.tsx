@@ -1,9 +1,32 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { useShadowStore } from '@/store/shadowStore';
+import { useUserStore } from '@/store/userStore';
+import { generateSchedule } from '@/utils/scheduleUtils';
+import { isToday } from '@/utils/dateUtils';
 
 const DailyScheduleCard = () => {
     const navigate = useNavigate();
+    const { shadows } = useShadowStore();
+    const { userName } = useUserStore();
+
+    // Get today's schedule for assigned shadows
+    const todayEvent = (() => {
+        const myShadows = shadows.filter(s => s.assigneeName === userName);
+        for (const shadow of myShadows) {
+            const schedule = generateSchedule(shadow);
+            const todayItem = schedule.find(item => isToday(item.date) && item.status !== 'completed'); // Show upcoming for today
+            if (todayItem) {
+                return {
+                    title: todayItem.title,
+                    time: todayItem.timeStr.replace(' 예정', ''),
+                    shadowName: shadow.name
+                };
+            }
+        }
+        return null;
+    })();
 
     return (
         <Card
@@ -22,13 +45,28 @@ const DailyScheduleCard = () => {
             </CardHeader>
             <CardContent>
                 <div className="mt-2">
-                    <span className="text-4xl font-bold tracking-tight">D-Day</span>
-                    <p className="text-blue-100 text-sm mt-1">정기 순찰일</p>
+                    <span className="text-4xl font-bold tracking-tight">
+                        {todayEvent ? 'D-Day' : 'No Plan'}
+                    </span>
+                    <p className="text-blue-100 text-sm mt-1">
+                        {todayEvent ? '예정된 점검 진행' : '오늘 예정된 점검이 없습니다'}
+                    </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-white/20">
                     <div className="flex justify-between items-center text-sm">
-                        <span>14:00</span>
-                        <span className="opacity-80">4구역 순찰</span>
+                        {todayEvent ? (
+                            <>
+                                <span>{todayEvent.time}</span>
+                                <span className="opacity-80 truncate ml-2">
+                                    {todayEvent.shadowName} - {todayEvent.title}
+                                </span>
+                            </>
+                        ) : (
+                            <>
+                                <span>-</span>
+                                <span className="opacity-80">휴식</span>
+                            </>
+                        )}
                     </div>
                 </div>
             </CardContent>

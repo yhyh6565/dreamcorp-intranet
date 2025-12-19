@@ -11,7 +11,8 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  ShieldAlert
+  ShieldAlert,
+  FileSignature
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [securityMessageTriggered, isSecurityToastShown, setSecurityToastShown]);
 
+  // Global Scroll Reset on Navigation
+  React.useEffect(() => {
+    // Locate the Radix ScrollArea Viewport and reset its scroll position
+    const viewport = document.querySelector('#main-scroll-area [data-radix-scroll-area-viewport]');
+    if (viewport) {
+      viewport.scrollTop = 0;
+    }
+  }, [location.pathname]);
+
   const menuItems = [
     { icon: Bell, label: '공지사항', path: '/notices' },
     { icon: Mail, label: '쪽지함', path: '/messages', badge: (securityMessageTriggered && !isSecurityMessageRead) ? '+1' : undefined },
@@ -54,6 +64,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { icon: MapPin, label: '시설 안내도', path: '/floor-map' },
     { icon: ShieldAlert, label: '담당 어둠 배정', path: '/shadow-assignment' },
     { icon: Gift, label: '복지몰', path: '/welfare-mall' },
+    { icon: FileSignature, label: '전자결재', path: '/approvals', disabled: true },
     { icon: User, label: 'HR 포털', path: '/hr-portal', disabled: true },
   ];
 
@@ -233,7 +244,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <ScrollArea className="flex-1 bg-secondary/30">
+        <ScrollArea className="flex-1 bg-secondary/30" id="main-scroll-area">
           <div className="p-6 md:p-8 max-w-7xl mx-auto w-full animate-fade-in">
             {children}
           </div>
