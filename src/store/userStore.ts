@@ -143,7 +143,7 @@ export const useUserStore = create<UserState>()(
           hasWelfareMallAccess: true,
           welfareMallLoginId: id,
           welfareMallHiddenAccess: isHiddenAccess,
-          points: isHiddenAccess ? 36500 : state.points // Update points for hidden persona
+          points: isHiddenAccess ? 365000 : state.points // Update points for hidden persona
         }));
         return true;
       },

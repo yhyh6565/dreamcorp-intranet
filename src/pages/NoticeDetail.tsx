@@ -34,7 +34,10 @@ const NoticeDetail = () => {
     navigate('/notices');
   };
 
-  const notice = notices.find(n => n.id === id);
+  const currentIndex = notices.findIndex(n => n.id === id);
+  const notice = notices[currentIndex];
+  const prevNotice = currentIndex !== -1 && currentIndex < notices.length - 1 ? notices[currentIndex + 1] : null;
+  const nextNotice = currentIndex > 0 ? notices[currentIndex - 1] : null;
 
   if (!notice) {
     return (
@@ -125,9 +128,27 @@ const NoticeDetail = () => {
 
           {/* Footer Navigation */}
           <div className="p-6 bg-slate-50 flex justify-between">
-            <Button variant="ghost" disabled>이전 글</Button>
+            <Button
+              variant="ghost"
+              disabled={!prevNotice}
+              onClick={() => prevNotice && navigate(`/notices/${prevNotice.id}`)}
+              className={!prevNotice ? 'invisible' : ''}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              이전 글
+            </Button>
+
             <Button variant="ghost" onClick={() => navigate('/notices')}>목록</Button>
-            <Button variant="ghost" disabled>다음 글</Button>
+
+            <Button
+              variant="ghost"
+              disabled={!nextNotice}
+              onClick={() => nextNotice && navigate(`/notices/${nextNotice.id}`)}
+              className={!nextNotice ? 'invisible' : ''}
+            >
+              다음 글
+              <ArrowLeft className="h-4 w-4 ml-2 rotate-180" />
+            </Button>
           </div>
         </Card>
       </div>

@@ -132,7 +132,7 @@ const MyShadows = () => {
                                         </h4>
                                         <div className="bg-amber-50 border border-amber-100 rounded-md p-3 text-sm text-amber-900 flex gap-2 items-start">
                                             <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-                                            <p>최근 {shadow.name} 주변에서 비정상적인 온도 저하가 감지되었습니다. 접근 시 보온 장비를 착용하십시오.</p>
+                                            <p>{shadow.note || "특이사항 없음"}</p>
                                         </div>
                                     </div>
                                 </CardContent>
