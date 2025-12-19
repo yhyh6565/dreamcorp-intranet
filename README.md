@@ -30,6 +30,10 @@
 * **Icons:** [Lucide React](https://lucide.dev/)
 * **Package Manager:** Bun (or npm)
 
+## 이미지
+
+사용된 이미지는 Nano Banana Pro로 생성되었습니다. 
+
 ---
 
 ## 🖥️ 주요 페이지 및 기능 (Page Structure)
