@@ -54,7 +54,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { icon: MapPin, label: '시설 안내도', path: '/floor-map' },
     { icon: ShieldAlert, label: '담당 어둠 배정', path: '/shadow-assignment' },
     { icon: Gift, label: '복지몰', path: '/welfare-mall' },
-    { icon: User, label: 'HR 포털', path: '/hr-portal' },
+    { icon: User, label: 'HR 포털', path: '/hr-portal', disabled: true },
   ];
 
   const handleLogout = () => {
@@ -113,40 +113,47 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <div className="space-y-1 px-2">
                 {menuItems.map((item) => (
                   isCollapsed ? (
-                    <Tooltip key={item.path} side="right">
+                    <Tooltip key={item.path}>
                       <TooltipTrigger asChild>
                         <Button
                           variant={'ghost'}
+                          disabled={item.disabled}
                           className={cn(
                             "w-full justify-center h-10 transition-all duration-200 relative",
-                            location.pathname.startsWith(item.path)
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            item.disabled
+                              ? "text-muted-foreground/40 cursor-not-allowed"
+                              : location.pathname.startsWith(item.path)
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                           )}
-                          onClick={() => navigate(item.path)}
+                          onClick={() => !item.disabled && navigate(item.path)}
                         >
                           <item.icon className="h-5 w-5" />
                           {item.badge && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="font-medium bg-slate-900 text-white border-slate-800 ml-2">
-                        {item.label} {item.badge && `(${item.badge})`}
+                        {item.label} {item.badge && `(${item.badge})`} {item.disabled && '(준비중)'}
                       </TooltipContent>
                     </Tooltip>
                   ) : (
                     <Button
                       key={item.path}
                       variant={'ghost'}
+                      disabled={item.disabled}
                       className={cn(
                         "w-full justify-start gap-3 h-10 text-sm font-medium transition-all duration-200 px-3 relative",
-                        location.pathname.startsWith(item.path)
-                          ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        item.disabled
+                          ? "text-muted-foreground/40 cursor-not-allowed"
+                          : location.pathname.startsWith(item.path)
+                            ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
+                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       )}
-                      onClick={() => navigate(item.path)}
+                      onClick={() => !item.disabled && navigate(item.path)}
                     >
-                      <item.icon className={cn("h-4 w-4", location.pathname.startsWith(item.path) ? "text-primary" : "text-muted-foreground")} />
+                      <item.icon className={cn("h-4 w-4", item.disabled ? "text-muted-foreground/40" : location.pathname.startsWith(item.path) ? "text-primary" : "text-muted-foreground")} />
                       <span className="truncate">{item.label}</span>
+                      {item.disabled && <span className="ml-auto text-[10px] text-muted-foreground/50">(준비중)</span>}
                       {item.badge && (
                         <span className="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
                           {item.badge}
@@ -194,7 +201,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             ) : (
               <div className="flex flex-col items-center gap-2">
                 <TooltipProvider delayDuration={0}>
-                  <Tooltip side="right">
+                  <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center border border-border cursor-default hover:bg-slate-200 transition-colors">
                         <User className="h-4 w-4 text-muted-foreground" />
