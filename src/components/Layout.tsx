@@ -133,7 +133,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="font-medium bg-slate-900 text-white border-slate-800 ml-2">
-                        {item.label} {item.badge && `(${item.badge})`} {item.disabled && '(준비중)'}
+                        {item.label} {item.badge && `(${item.badge})`}
                       </TooltipContent>
                     </Tooltip>
                   ) : (
@@ -153,7 +153,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     >
                       <item.icon className={cn("h-4 w-4", item.disabled ? "text-muted-foreground/40" : location.pathname.startsWith(item.path) ? "text-primary" : "text-muted-foreground")} />
                       <span className="truncate">{item.label}</span>
-                      {item.disabled && <span className="ml-auto text-[10px] text-muted-foreground/50">(준비중)</span>}
                       {item.badge && (
                         <span className="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
                           {item.badge}
