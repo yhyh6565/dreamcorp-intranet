@@ -146,7 +146,7 @@ const WelfareMall = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-slate-200 relative">
       {/* Local Header - Minimalist */}
-      <header className="h-24 sticky top-0 bg-white z-40 flex items-center justify-between px-12 border-b border-transparent transition-colors duration-300 hover:border-slate-100">
+      <header className="h-24 sticky top-0 bg-white z-40 flex items-center justify-between px-4 md:px-12 border-b border-transparent transition-colors duration-300 hover:border-slate-100">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-light tracking-wide text-foreground/90 uppercase font-sans">
             백일몽 임직원 복지몰
@@ -189,7 +189,7 @@ const WelfareMall = () => {
         </div>
       </header>
 
-      <main className="max-w-[1600px] mx-auto px-12 py-16 animate-fade-in">
+      <main className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 animate-fade-in">
         {/* Tab Layout - Clean Text Tabs */}
         <Tabs defaultValue="shopping" className="w-full space-y-16">
           <div className="flex justify-start border-b border-slate-100">
@@ -224,7 +224,7 @@ const WelfareMall = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-8 md:gap-y-16">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
@@ -286,8 +286,8 @@ const WelfareMall = () => {
           {/* Application Tab - Premium Services */}
           <TabsContent value="application" className="space-y-16 outline-none">
             {/* Housing Card */}
-            <div className="group cursor-pointer relative overflow-hidden bg-slate-50 border border-slate-100 flex flex-col md:flex-row h-[500px]">
-              <div className="md:w-1/2 bg-slate-200 relative overflow-hidden">
+            <div className="group cursor-pointer relative overflow-hidden bg-slate-50 border border-slate-100 flex flex-col md:flex-row h-auto md:h-[500px]">
+              <div className="w-full h-64 md:w-1/2 md:h-full bg-slate-200 relative overflow-hidden">
                 <img src="/pic/사택 전경.png" alt="Office Tel" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/20" />
                 <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-sm p-8 border-t border-slate-100">
@@ -295,7 +295,7 @@ const WelfareMall = () => {
                   <p className="text-slate-500 mt-2">Premium Housing Service</p>
                 </div>
               </div>
-              <div className="md:w-1/2 p-16 flex flex-col justify-center">
+              <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
                 <div className="space-y-6">
                   <span className="text-blue-600 font-mono text-sm tracking-widest uppercase">Available Now</span>
                   <h3 className="text-3xl font-bold text-slate-900 leading-tight">

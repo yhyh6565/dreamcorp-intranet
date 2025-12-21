@@ -42,7 +42,7 @@ const LoginGateway = () => {
       <div className="absolute top-[10%] left-[-5%] w-[300px] h-[300px] bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
 
       <Card className="w-full max-w-[480px] shadow-2xl border-white/20 bg-white/80 backdrop-blur-xl animate-scale-in transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
-        <CardContent className="p-12 flex flex-col items-center">
+        <CardContent className="p-6 md:p-12 flex flex-col items-center">
           {/* Logo Section */}
           <div className="mb-12 flex flex-col items-center animate-fade-in">
             <div className="w-16 h-16 bg-primary mb-6 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-300">

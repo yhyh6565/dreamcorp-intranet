@@ -22,11 +22,11 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[calc(100vh-140px)]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[calc(100vh-140px)]">
         {/* Adjusted height to fit viewport better if needed, or remove h-full */}
 
         {/* Left Column Group (Facility, Schedule, Links, Notices) */}
-        <div className="md:col-span-8 lg:col-span-9 h-full flex flex-col gap-6">
+        <div className="md:col-span-8 lg:col-span-9 h-auto md:h-full flex flex-col gap-6">
 
           {/* Row 1: Top Widgets (Fixed Height or based on content) */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-9 gap-6">
@@ -42,13 +42,13 @@ const Dashboard = () => {
           </div>
 
           {/* Row 2: Notices (Fills remaining space) */}
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-[300px] md:min-h-0">
             <NoticeWidget />
           </div>
         </div>
 
         {/* Right Column: Messages Only */}
-        <div className="md:col-span-4 lg:col-span-3 h-full">
+        <div className="md:col-span-4 lg:col-span-3 h-auto md:h-full">
           <MessageWidget />
         </div>
       </div>

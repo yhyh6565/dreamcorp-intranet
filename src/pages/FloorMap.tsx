@@ -32,6 +32,7 @@ const FloorMap = () => {
 
   const [selectedFloor, setSelectedFloor] = useState<FloorData>(floors[5]); // 10F default
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isFloorListExpanded, setIsFloorListExpanded] = useState(true);
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
 
   // Helper to parse floor ID
@@ -93,12 +94,12 @@ const FloorMap = () => {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto h-[calc(100vh-8rem)] flex flex-col md:flex-row gap-6">
+      <div className="max-w-7xl mx-auto h-auto md:h-[calc(100vh-8rem)] flex flex-col md:flex-row gap-6">
 
         {/* Left Navigation - Floor Selector */}
         <div className={cn(
-          "flex flex-col h-full shrink-0 transition-all duration-300 ease-in-out overflow-hidden",
-          isSidebarOpen ? "w-full md:w-64 opacity-100" : "w-0 opacity-0"
+          "flex flex-col shrink-0 transition-all duration-300 ease-in-out overflow-hidden relative z-20",
+          isSidebarOpen ? "w-full h-auto md:h-full md:w-64 opacity-100" : "h-0 md:h-full md:w-0 opacity-0 md:opacity-0"
         )}>
           <Card className="w-full h-full border-none shadow-lg flex flex-col overflow-hidden">
             <CardHeader className="bg-slate-900 text-white p-4">
@@ -110,56 +111,80 @@ const FloorMap = () => {
                 백일몽 주식회사 시설 현황
               </CardDescription>
             </CardHeader>
-            <div className="p-2 border-b border-border bg-slate-50 flex justify-between items-center">
-              <Button variant="ghost" size="sm" onClick={() => handleFloorScroll('up')} disabled={floors.findIndex(f => f.id === selectedFloor.id) === 0}>
+            <div
+              className="p-2 border-b border-border bg-slate-50 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition-colors"
+              onClick={() => setIsFloorListExpanded(!isFloorListExpanded)}
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => { e.stopPropagation(); handleFloorScroll('up'); }}
+                disabled={floors.findIndex(f => f.id === selectedFloor.id) === 0}
+              >
                 <ChevronUp className="h-4 w-4" />
               </Button>
-              <span className="text-xs font-semibold text-muted-foreground">층 선택</span>
-              <Button variant="ghost" size="sm" onClick={() => handleFloorScroll('down')} disabled={floors.findIndex(f => f.id === selectedFloor.id) === floors.length - 1}>
+              <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
+                층 선택
+                <span className="md:hidden text-[10px] text-slate-400 font-normal">
+                  ({isFloorListExpanded ? '접기' : '펼치기'})
+                </span>
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => { e.stopPropagation(); handleFloorScroll('down'); }}
+                disabled={floors.findIndex(f => f.id === selectedFloor.id) === floors.length - 1}
+              >
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </div>
-            <CardContent className="flex-1 overflow-y-auto p-2 bg-slate-50 space-y-1">
-              {floors.map((floor) => (
-                <button
-                  key={floor.id}
-                  onClick={() => setSelectedFloor(floor)}
-                  className={cn(
-                    "w-full text-left p-3 rounded-md transition-all border-l-4 text-sm relative overflow-hidden group",
-                    selectedFloor.id === floor.id
-                      ? "bg-white shadow-sm border-primary"
-                      : "border-transparent hover:bg-slate-200/50"
-                  )}
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className={cn("font-bold", selectedFloor.id === floor.id ? "text-primary" : "text-slate-700")}>
-                      {floor.name}
-                    </span>
-                    <Badge variant="outline" className="text-[10px] h-5 px-1 bg-transparent border-slate-300">
-                      {floor.id}
-                    </Badge>
-                  </div>
-                  <div className="text-xs text-muted-foreground truncate pr-4">{floor.type}</div>
 
-                  {/* Category Indicator Dot */}
-                  <div className={cn(
-                    "absolute top-2 right-2 w-1.5 h-1.5 rounded-full",
-                    floor.category === 'main' ? "bg-blue-400" :
-                      floor.category === 'annex' ? "bg-amber-400" : "bg-red-400"
-                  )} />
-                </button>
-              ))}
-            </CardContent>
-            <div className="p-4 bg-white border-t border-border text-xs space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-blue-400"></div> <span className="text-slate-500">본관 (Main)</span>
-              </div>
-            </div>
+            {/* Collapsible Content */}
+            {isFloorListExpanded && (
+              <>
+                <CardContent className="flex-1 overflow-y-auto p-2 bg-slate-50 space-y-1 h-48 md:h-auto">
+                  {floors.map((floor) => (
+                    <button
+                      key={floor.id}
+                      onClick={() => setSelectedFloor(floor)}
+                      className={cn(
+                        "w-full text-left p-3 rounded-md transition-all border-l-4 text-sm relative overflow-hidden group",
+                        selectedFloor.id === floor.id
+                          ? "bg-white shadow-sm border-primary"
+                          : "border-transparent hover:bg-slate-200/50"
+                      )}
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className={cn("font-bold", selectedFloor.id === floor.id ? "text-primary" : "text-slate-700")}>
+                          {floor.name}
+                        </span>
+                        <Badge variant="outline" className="text-[10px] h-5 px-1 bg-transparent border-slate-300">
+                          {floor.id}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate pr-4">{floor.type}</div>
+
+                      {/* Category Indicator Dot */}
+                      <div className={cn(
+                        "absolute top-2 right-2 w-1.5 h-1.5 rounded-full",
+                        floor.category === 'main' ? "bg-blue-400" :
+                          floor.category === 'annex' ? "bg-amber-400" : "bg-red-400"
+                      )} />
+                    </button>
+                  ))}
+                </CardContent>
+                <div className="p-4 bg-white border-t border-border text-xs space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div> <span className="text-slate-500">본관 (Main)</span>
+                  </div>
+                </div>
+              </>
+            )}
           </Card>
         </div>
 
         {/* Right Content - Floor Plan Viewer */}
-        <div className="flex-1 flex flex-col gap-4 min-h-0">
+        <div className="flex-1 flex flex-col gap-4 min-h-[500px]">
           <Card className="flex-1 border-none shadow-lg flex flex-col overflow-hidden bg-slate-900 group">
 
             {/* Map Header */}

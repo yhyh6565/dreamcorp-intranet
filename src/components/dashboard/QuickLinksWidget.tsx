@@ -55,14 +55,19 @@ const QuickLinksWidget = () => {
         }
     ].filter(link => link.visible);
 
+    const shouldUseGrid = quickLinks.length >= 4;
+
     return (
         <>
-            <div className="flex flex-col gap-3 h-full">
+            <div className={cn(
+                "grid gap-3 h-full",
+                shouldUseGrid ? "grid-cols-2 md:grid-cols-1" : "grid-cols-1"
+            )}>
                 {quickLinks.map((link, idx) => (
                     <Button
                         key={idx}
                         variant="outline"
-                        className="w-full justify-start gap-3 flex-1 bg-white hover:bg-slate-50 border-slate-200 shadow-sm transition-all hover:shadow-md py-0"
+                        className="w-full justify-start gap-3 h-auto min-h-[60px] md:min-h-0 md:h-full bg-white hover:bg-slate-50 border-slate-200 shadow-sm transition-all hover:shadow-md py-4 md:py-0"
                         onClick={link.action}
                     >
                         <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center shrink-0", link.bgColor)}>
