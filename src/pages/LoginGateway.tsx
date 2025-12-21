@@ -52,7 +52,7 @@ const LoginGateway = () => {
                 className="w-10 h-10 object-contain brightness-0 invert"
               />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">백일몽 주식회사에 오신 것을 확인합니다</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2 break-keep text-center">백일몽 주식회사에 오신 것을 환영합니다</h1>
             <p className="text-slate-500 font-light tracking-wide text-sm uppercase">임직원 전용 인트라넷</p>
           </div>
 
