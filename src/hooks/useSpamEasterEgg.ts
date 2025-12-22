@@ -49,7 +49,7 @@ export const useSpamEasterEgg = (id: string | undefined) => {
                     setNavigationDisabled(true); // Lock sidebar navigation when 'Thank you' is seen
                 }
             },
-            { threshold: 0.5 }
+            { threshold: 0 }
         );
 
         if (thankYouRef.current) {

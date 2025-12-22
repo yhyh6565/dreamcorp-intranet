@@ -214,7 +214,7 @@ const MessageDetail = () => {
             <>
               {message.content}
               {/* Ref for intersection observer to trigger back button logic only for message 2 */}
-              {id === '2' && <p ref={thankYouRef} className="opacity-0 h-1" />}
+              {id === '2' && <p ref={thankYouRef} className="opacity-0 h-10 w-full" />}
               {id === 'security-breach' && <div ref={securityBottomRef} className="h-10 w-full" />}
             </>
           )}
