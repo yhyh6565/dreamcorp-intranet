@@ -77,7 +77,7 @@ const NoticeDetail = () => {
               <span className="text-sm text-muted-foreground">No. {notice.id}</span>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-6 break-keep">
               {notice.title}
             </h1>
 
@@ -108,7 +108,7 @@ const NoticeDetail = () => {
           {/* Content */}
           <CardContent className="p-8 md:p-12 min-h-[400px]">
             <div className="prose prose-slate max-w-none">
-              <pre className="whitespace-pre-wrap font-sans text-base leading-relaxed text-slate-800">
+              <pre className="whitespace-pre-wrap font-sans text-base leading-relaxed text-slate-800 break-keep">
                 {notice.content}
               </pre>
             </div>
