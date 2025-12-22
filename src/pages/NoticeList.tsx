@@ -64,10 +64,10 @@ const NoticeList = () => {
           <CardContent className="p-0">
             <div className="w-full text-sm text-left">
               {/* Table Header */}
-              <div className="flex items-center bg-slate-50 border-b border-border py-3 px-6 font-medium text-slate-500">
-                <div className="w-16 text-center shrink-0">번호</div>
-                <div className="w-24 text-center shrink-0">구분</div>
-                <div className="flex-1 px-4">제목</div>
+              <div className="flex items-center bg-slate-50 border-b border-border py-3 px-3 md:px-6 font-medium text-slate-500">
+                <div className="w-10 md:w-16 text-center shrink-0">번호</div>
+                <div className="w-16 md:w-24 text-center shrink-0">구분</div>
+                <div className="flex-1 px-2 md:px-4">제목</div>
                 <div className="w-32 text-center shrink-0 hidden md:block">작성자</div>
                 <div className="w-24 text-center shrink-0">작성일</div>
               </div>
@@ -80,10 +80,10 @@ const NoticeList = () => {
                     <div
                       key={notice.id}
                       onClick={() => navigate(`/notices/${notice.id}`)}
-                      className={`flex items-center py-3 px-6 cursor-pointer hover:bg-blue-50/50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
+                      className={`flex items-center py-3 px-3 md:px-6 cursor-pointer hover:bg-blue-50/50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
                         } ${isPinned ? 'bg-red-50/10' : ''}`}
                     >
-                      <div className="w-16 text-center text-slate-400 shrink-0 font-mono text-xs">
+                      <div className="w-10 md:w-16 text-center text-slate-400 shrink-0 font-mono text-xs">
                         {/* Show Pinned Icon or Number */}
                         {isPinned ? (
                           <span className="font-bold text-red-500">공지</span>
@@ -91,7 +91,7 @@ const NoticeList = () => {
                           notices.length - index
                         )}
                       </div>
-                      <div className="w-24 text-center shrink-0">
+                      <div className="w-16 md:w-24 text-center shrink-0">
                         <Badge
                           variant="secondary"
                           className={`font-normal ${getBadgeStyle(notice.category, isPinned)}`}
@@ -99,7 +99,7 @@ const NoticeList = () => {
                           {notice.category}
                         </Badge>
                       </div>
-                      <div className={`flex-1 px-4 font-medium transition-colors truncate ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
+                      <div className={`flex-1 px-2 md:px-4 font-medium transition-colors truncate ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
                         {notice.title}
                       </div>
                       <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">
@@ -114,10 +114,10 @@ const NoticeList = () => {
 
                 {/* Empty Rows Filler (Visual) */}
                 {Array.from({ length: emptyRows }).map((_, i) => (
-                  <div key={`empty-${i}`} className="flex items-center py-3 px-6 opacity-40">
-                    <div className="w-16 text-center text-slate-300 shrink-0 font-mono text-xs">-</div>
-                    <div className="w-24 text-center shrink-0"></div>
-                    <div className="flex-1 px-4 text-slate-300"></div>
+                  <div key={`empty-${i}`} className="flex items-center py-3 px-3 md:px-6 opacity-40">
+                    <div className="w-10 md:w-16 text-center text-slate-300 shrink-0 font-mono text-xs">-</div>
+                    <div className="w-16 md:w-24 text-center shrink-0"></div>
+                    <div className="flex-1 px-2 md:px-4 text-slate-300"></div>
                     <div className="w-32 text-center shrink-0 hidden md:block"></div>
                     <div className="w-24 text-center shrink-0"></div>
                   </div>

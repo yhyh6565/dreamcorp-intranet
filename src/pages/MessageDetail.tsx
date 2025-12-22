@@ -128,9 +128,9 @@ const MessageDetail = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             )}
-            <h2 className="text-2xl font-bold text-slate-900 leading-tight">{message.title}</h2>
+            <h2 className="text-2xl font-bold text-slate-900 leading-tight break-keep">{message.title}</h2>
           </div>
-          <div className="flex gap-1">
+          <div className="hidden md:flex gap-1">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -220,9 +220,9 @@ const MessageDetail = () => {
           )}
         </div>
 
-        {!showRetyping && (
+        {!showRetyping && message.id !== '2' && (
           <div className="mt-12 pt-8 border-t border-slate-100">
-            <Button variant="outline" className="gap-2" disabled={message.id === '2'}>
+            <Button variant="outline" className="gap-2">
               <Reply className="h-4 w-4" />
               답장하기
             </Button>
