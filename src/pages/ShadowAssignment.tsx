@@ -72,8 +72,8 @@ const ShadowAssignment = () => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-                    <Table>
+                <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
+                    <Table className="min-w-[600px]">
                         <TableHeader className="bg-slate-50">
                             <TableRow>
                                 <TableHead className="w-[100px]">GRADE</TableHead>
