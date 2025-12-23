@@ -14,6 +14,8 @@ import NoticeList from "./pages/NoticeList";
 import NoticeDetail from "./pages/NoticeDetail";
 import MessageList from "./pages/MessageList";
 import MessageDetail from "./pages/MessageDetail";
+import ManualList from "./pages/ManualList";
+import ManualDetail from "./pages/ManualDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/notices/:id" element={<NoticeDetail />} />
           <Route path="/messages" element={<MessageList />} />
           <Route path="/messages/:id" element={<MessageDetail />} />
+          <Route path="/manual" element={<ManualList />} />
+          <Route path="/manual/:id" element={<ManualDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
