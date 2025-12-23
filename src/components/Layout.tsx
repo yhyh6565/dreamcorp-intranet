@@ -13,7 +13,8 @@ import {
   ChevronRight,
   ShieldAlert,
   FileSignature,
-  Menu
+  Menu,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -52,6 +53,7 @@ const SidebarContent = ({
     { icon: Calendar, label: '일정 관리', path: '/calendar' },
     { icon: MapPin, label: '시설 안내도', path: '/floor-map' },
     { icon: ShieldAlert, label: '담당 어둠 배정', path: '/shadow-assignment' },
+    { icon: BookOpen, label: '어둠 관리 매뉴얼', path: '/manual' },
     { icon: Gift, label: '복지몰', path: '/welfare-mall' },
     { icon: FileSignature, label: '전자결재', path: '/approvals', disabled: true },
     { icon: User, label: 'HR 포털', path: '/hr-portal', disabled: true },
