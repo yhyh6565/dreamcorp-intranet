@@ -145,8 +145,11 @@ const LoginGateway = () => {
       </Card>
 
       {/* Footer Copyright */}
-      <div className="absolute bottom-6 text-center w-full">
-        <p className="text-slate-400 text-xs font-medium">© 2024 (주)백일몽. All rights reserved.</p>
+      <div className="absolute bottom-6 text-center w-full px-4">
+        <p className="text-slate-400 text-[10px] md:text-xs font-medium break-keep opacity-60 leading-relaxed">
+          Copyright © 2025 All rights reserved. <br className="md:hidden" />
+          본 페이지는 비공식 팬 페이지로, '괴담에 떨어져도 출근을 해야 하는구나' IP 및 제반 권리는 원작자에게 귀속됩니다.
+        </p>
       </div>
     </div>
   );
