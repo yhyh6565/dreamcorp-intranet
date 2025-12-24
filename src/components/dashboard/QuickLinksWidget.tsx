@@ -17,8 +17,8 @@ const QuickLinksWidget = () => {
     const [showFoxCounseling, setShowFoxCounseling] = useState(false);
     const [showStorageRental, setShowStorageRental] = useState(false);
 
-    // Logic: Special Authority (Privileged) if Rank is '대리' (Assistant Manager) or higher.
-    const hasPrivilegedAccess = checkRank('대리');
+    // Logic: Special Authority (Privileged) if Rank is '주임' (Senior Staff) or higher.
+    const hasPrivilegedAccess = checkRank('주임');
 
     const quickLinks = [
         {
