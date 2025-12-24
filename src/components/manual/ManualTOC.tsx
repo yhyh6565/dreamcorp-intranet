@@ -11,7 +11,7 @@ interface ManualTOCProps {
 
 export const ManualTOC = ({ manual, scrollToSection, tocEntryTitle, tocGuideTitle }: ManualTOCProps) => {
     return (
-        <div className="border border-slate-200 rounded-lg p-4 bg-white shadow-sm h-fit sticky top-24">
+        <div className="border border-slate-200 rounded-lg p-4 bg-white shadow-sm h-full md:h-fit md:sticky md:top-24">
             <h3 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-2">
                 <List className="h-3 w-3" />
                 목차 (Table of Contents)

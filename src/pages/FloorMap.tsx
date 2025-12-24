@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useUserStore } from '@/store/userStore';
-import { ChevronUp, ChevronDown, Map as MapIcon, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { ChevronUp, ChevronDown, Map as MapIcon, PanelLeftClose, PanelLeftOpen, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +34,14 @@ const FloorMap = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isFloorListExpanded, setIsFloorListExpanded] = useState(true);
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(100); // Percentage
+
+  const handleZoom = (direction: 'in' | 'out') => {
+    setZoomLevel(prev => {
+      const newZoom = direction === 'in' ? prev + 25 : prev - 25;
+      return Math.min(Math.max(50, newZoom), 200); // Min 50%, Max 200%
+    });
+  };
 
   // Helper to parse floor ID
   const getFloorNumber = (floorId: string): number => {
@@ -102,22 +110,23 @@ const FloorMap = () => {
           isSidebarOpen ? "w-full h-auto md:h-full md:w-64 opacity-100" : "h-0 md:h-full md:w-0 opacity-0 md:opacity-0"
         )}>
           <Card className="w-full h-full border-none shadow-lg flex flex-col overflow-hidden">
-            <CardHeader className="bg-slate-900 text-white p-4">
-              <CardTitle className="text-lg flex items-center gap-2">
+            <CardHeader className="bg-slate-900 text-white p-3 md:p-6 flex flex-row md:flex-col items-baseline md:items-start gap-3 md:gap-2 space-y-0 md:space-y-1.5">
+              <CardTitle className="text-base md:text-lg flex items-center gap-2 shrink-0">
                 <MapIcon className="h-5 w-5" />
                 시설 안내도
               </CardTitle>
-              <CardDescription className="text-slate-400 text-xs">
+              <CardDescription className="text-slate-400 text-xs shrink-0 md:ml-1">
                 백일몽 주식회사 시설 현황
               </CardDescription>
             </CardHeader>
             <div
-              className="p-2 border-b border-border bg-slate-50 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition-colors"
+              className="p-1 md:p-2 border-b border-border bg-slate-50 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition-colors"
               onClick={() => setIsFloorListExpanded(!isFloorListExpanded)}
             >
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-6 w-8 md:h-9 md:w-auto"
                 onClick={(e) => { e.stopPropagation(); handleFloorScroll('up'); }}
                 disabled={floors.findIndex(f => f.id === selectedFloor.id) === 0}
               >
@@ -132,6 +141,7 @@ const FloorMap = () => {
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-6 w-8 md:h-9 md:w-auto"
                 onClick={(e) => { e.stopPropagation(); handleFloorScroll('down'); }}
                 disabled={floors.findIndex(f => f.id === selectedFloor.id) === floors.length - 1}
               >
@@ -188,7 +198,7 @@ const FloorMap = () => {
           <Card className="flex-1 border-none shadow-lg flex flex-col overflow-hidden bg-slate-900 group">
 
             {/* Map Header */}
-            <div className="p-6 bg-slate-900 border-b border-slate-800 z-10 shrink-0">
+            <div className="p-3 md:p-6 bg-slate-900 border-b border-slate-800 z-10 shrink-0">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-4">
                   <Button
@@ -201,13 +211,13 @@ const FloorMap = () => {
                     {isSidebarOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
                   </Button>
                   <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <h2 className="text-base md:text-2xl font-bold text-white flex items-center gap-3">
                       {selectedFloor.name}
-                      <Badge variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
+                      <Badge variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700 text-[10px] h-5 px-1.5">
                         {selectedFloor.type}
                       </Badge>
                     </h2>
-                    <p className="text-slate-400 mt-1">{selectedFloor.description}</p>
+                    {/* Description removed as requested */}
                   </div>
                 </div>
                 <div className="text-right hidden md:block">
@@ -231,86 +241,107 @@ const FloorMap = () => {
                 minWidth: '100%'
               }}></div>
 
-              {/* The Map Container */}
-              <div className="relative w-full aspect-video border-2 border-slate-700/50 bg-slate-900/50 shadow-2xl rounded-sm" style={{ containerType: 'inline-size' }}>
+              <div className="w-full md:w-full overflow-x-auto overflow-y-hidden pb-4 md:pb-0 relative" style={{ touchAction: 'pan-x pan-y' }}> {/* Scroll container */}
+                {/* Zoom Controls (Mobile/Desktop) */}
+                <div className="absolute top-4 right-4 z-20 flex flex-col gap-1">
+                  <Button variant="secondary" size="icon" className="h-8 w-8 shadow-md bg-white/90 hover:bg-white" onClick={() => handleZoom('in')} disabled={zoomLevel >= 200} title="Zoom In">
+                    <ChevronUp className="h-4 w-4" /> {/* Reusing Icon, ideally Plus but ChevronUp works as 'Up' */}
+                  </Button>
+                  <div className="bg-slate-900/80 text-white text-[10px] text-center py-1 rounded font-mono backdrop-blur-sm">
+                    {zoomLevel}%
+                  </div>
+                  <Button variant="secondary" size="icon" className="h-8 w-8 shadow-md bg-white/90 hover:bg-white" onClick={() => handleZoom('out')} disabled={zoomLevel <= 50} title="Zoom Out">
+                    <ChevronDown className="h-4 w-4" /> {/* Reusing Icon */}
+                  </Button>
+                </div>
 
-                {/* Outer Wall */}
-                <div className="absolute inset-[2%] border border-slate-600">
+                <div
+                  className="relative aspect-video border-2 border-slate-700/50 bg-slate-900/50 shadow-2xl rounded-sm transition-all duration-300 ease-in-out origin-top-left"
+                  style={{
+                    containerType: 'inline-size',
+                    width: `${zoomLevel}%`,
+                    minWidth: '100%' // Ensure it doesn't get smaller than container width initially if needed, but 50% lets it shrink
+                  }}
+                >
 
-                  {/* Corridor (Visual) */}
-                  {selectedFloor.id !== '1F' && selectedFloor.id !== 'A1F' && (
-                    <div className="absolute top-[40%] left-0 right-0 h-[15%] bg-slate-800/30 border-y border-slate-800/50" />
-                  )}
+                  {/* Outer Wall */}
+                  <div className="absolute inset-[2%] border border-slate-600">
 
-                  {/* Rooms */}
-                  {currentRooms.map((room) => (
-                    <FloorRoom key={room.id} room={room} />
-                  ))}
+                    {/* Corridor (Visual) */}
+                    {selectedFloor.id !== '1F' && selectedFloor.id !== 'A1F' && (
+                      <div className="absolute top-[40%] left-0 right-0 h-[15%] bg-slate-800/30 border-y border-slate-800/50" />
+                    )}
 
-                  {/* Markers */}
-                  {currentFloorMarkers.map((marker) => (
-                    <FloorMarker
-                      key={marker.id}
-                      marker={marker}
-                      onMouseEnter={setHoveredMarker}
-                      onMouseLeave={() => setHoveredMarker(null)}
-                    />
-                  ))}
+                    {/* Rooms */}
+                    {currentRooms.map((room) => (
+                      <FloorRoom key={room.id} room={room} />
+                    ))}
 
-                  {/* Active Tooltip Overlay */}
-                  {hoveredMarker && (() => {
-                    const activeMarker = currentFloorMarkers.find(m => m.id === hoveredMarker);
-                    if (!activeMarker) return null;
+                    {/* Markers */}
+                    {currentFloorMarkers.map((marker) => (
+                      <FloorMarker
+                        key={marker.id}
+                        marker={marker}
+                        onMouseEnter={setHoveredMarker}
+                        onMouseLeave={() => setHoveredMarker(null)}
+                      />
+                    ))}
 
-                    const isTop = activeMarker.y < 40; // Increased threshold to safe zone
-                    const statusColor = getStatusColor(activeMarker.status);
+                    {/* Active Tooltip Overlay */}
+                    {hoveredMarker && (() => {
+                      const activeMarker = currentFloorMarkers.find(m => m.id === hoveredMarker);
+                      if (!activeMarker) return null;
 
-                    return (
-                      <div
-                        className="absolute z-50 pointer-events-none"
-                        style={{
-                          left: `${activeMarker.x}%`,
-                          top: `${activeMarker.y}%`,
-                          // Use transform to center horizontally and offset vertically
-                          // Since we position at the marker center, we need to move out
-                        }}
-                      >
-                        <div className={cn(
-                          "absolute left-1/2 -translate-x-1/2 w-max",
-                          isTop ? "top-[1.5cqw] pt-2" : "bottom-[1.5cqw] pb-2"
-                        )}>
-                          <div className="bg-slate-900 border border-slate-700 text-slate-200 p-3 rounded shadow-xl flex flex-col items-center relative animate-fade-in-up">
-                            <div className="space-y-1 text-center">
-                              <p className="font-bold text-white text-sm whitespace-nowrap">
-                                {activeMarker.assignee}
-                                {activeMarker.team && <span className="font-normal text-slate-300 ml-1">({activeMarker.team})</span>}
-                              </p>
-                              <p className="text-xs text-slate-400 whitespace-nowrap">Target: {activeMarker.target}</p>
-                              {activeMarker.location && <p className="text-[10px] text-slate-500">{activeMarker.location}</p>}
-                              <div className="flex flex-col gap-1 items-center mt-2">
-                                <Badge variant="outline" className={cn("text-[10px] border-none px-1.5", statusColor.split(' ')[0], "text-white")}>
-                                  {getStatusText(activeMarker.status)}
-                                </Badge>
-                                {activeMarker.note && (
-                                  <span className="text-[10px] text-amber-400 italic max-w-[150px] whitespace-normal break-words leading-tight">
-                                    "{activeMarker.note}"
-                                  </span>
-                                )}
+                      const isTop = activeMarker.y < 40; // Increased threshold to safe zone
+                      const statusColor = getStatusColor(activeMarker.status);
+
+                      return (
+                        <div
+                          className="absolute z-50 pointer-events-none"
+                          style={{
+                            left: `${activeMarker.x}%`,
+                            top: `${activeMarker.y}%`,
+                            // Use transform to center horizontally and offset vertically
+                            // Since we position at the marker center, we need to move out
+                          }}
+                        >
+                          <div className={cn(
+                            "absolute left-1/2 -translate-x-1/2 w-max",
+                            isTop ? "top-[1.5cqw] pt-2" : "bottom-[1.5cqw] pb-2"
+                          )}>
+                            <div className="bg-slate-900 border border-slate-700 text-slate-200 p-3 rounded shadow-xl flex flex-col items-center relative animate-fade-in-up">
+                              <div className="space-y-1 text-center">
+                                <p className="font-bold text-white text-sm whitespace-nowrap">
+                                  {activeMarker.assignee}
+                                  {activeMarker.team && <span className="font-normal text-slate-300 ml-1">({activeMarker.team})</span>}
+                                </p>
+                                <p className="text-xs text-slate-400 whitespace-nowrap">Target: {activeMarker.target}</p>
+                                {activeMarker.location && <p className="text-[10px] text-slate-500">{activeMarker.location}</p>}
+                                <div className="flex flex-col gap-1 items-center mt-2">
+                                  <Badge variant="outline" className={cn("text-[10px] border-none px-1.5", statusColor.split(' ')[0], "text-white")}>
+                                    {getStatusText(activeMarker.status)}
+                                  </Badge>
+                                  {activeMarker.note && (
+                                    <span className="text-[10px] text-amber-400 italic max-w-[150px] whitespace-normal break-words leading-tight">
+                                      "{activeMarker.note}"
+                                    </span>
+                                  )}
+                                </div>
                               </div>
+                              {/* Arrow - Smart Position */}
+                              <div className={cn(
+                                "absolute w-0 h-0 border-l-[6px] border-r-[6px] border-l-transparent border-r-transparent border-slate-700 left-1/2 -translate-x-1/2",
+                                isTop
+                                  ? "-top-[6px] border-b-[6px] border-t-0" // Point Up (triangle points up, sitting on top of box)
+                                  : "-bottom-[6px] border-t-[6px] border-b-0" // Point Down
+                              )} />
                             </div>
-                            {/* Arrow - Smart Position */}
-                            <div className={cn(
-                              "absolute w-0 h-0 border-l-[6px] border-r-[6px] border-l-transparent border-r-transparent border-slate-700 left-1/2 -translate-x-1/2",
-                              isTop
-                                ? "-top-[6px] border-b-[6px] border-t-0" // Point Up (triangle points up, sitting on top of box)
-                                : "-bottom-[6px] border-t-[6px] border-b-0" // Point Down
-                            )} />
                           </div>
                         </div>
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
 
+                  </div>
                 </div>
               </div>
 

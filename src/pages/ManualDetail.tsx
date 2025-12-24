@@ -22,6 +22,19 @@ import { ManualTOC } from '@/components/manual/ManualTOC';
 import { CalloutManualContent } from '@/components/manual/CalloutManualContent';
 import { StandardManualContent } from '@/components/manual/StandardManualContent';
 
+const ManualActionButtons = ({ onRevision, onPrint }: { onRevision: () => void, onPrint: () => void }) => (
+  <>
+    <Button variant="outline" size="sm" onClick={onRevision}>
+      <FileEdit className="h-4 w-4 mr-2" />
+      개정 신청
+    </Button>
+    <Button variant="outline" size="sm" onClick={onPrint}>
+      <Printer className="h-4 w-4 mr-2" />
+      인쇄하기
+    </Button>
+  </>
+);
+
 const ManualDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -149,15 +162,8 @@ const ManualDetail = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             목록으로 돌아가기
           </Button>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleRequestRevision}>
-              <FileEdit className="h-4 w-4 mr-2" />
-              개정 신청
-            </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint}>
-              <Printer className="h-4 w-4 mr-2" />
-              인쇄하기
-            </Button>
+          <div className="hidden md:flex items-center gap-2">
+            <ManualActionButtons onRevision={handleRequestRevision} onPrint={handlePrint} />
           </div>
         </div>
 
@@ -165,7 +171,7 @@ const ManualDetail = () => {
         <ManualHeader manual={manual} statusInfo={statusInfo} />
 
         {/* Split Info Section: Left (Meta) + Right (TOC) */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_240px] gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-[1fr_240px] gap-3 md:gap-6">
 
           {/* Left: Meta Info */}
           <ManualMetaBox manual={manual} />
@@ -207,6 +213,11 @@ const ManualDetail = () => {
         <Separator className="my-8" />
         <div className="text-center text-slate-400 text-xs font-mono">
           CONFIDENTIAL DOCUMENT - DO NOT DISTRIBUTE
+        </div>
+
+        {/* Mobile Only: Bottom Action Buttons */}
+        <div className="grid grid-cols-2 gap-3 md:hidden">
+          <ManualActionButtons onRevision={handleRequestRevision} onPrint={handlePrint} />
         </div>
       </div>
     </Layout>

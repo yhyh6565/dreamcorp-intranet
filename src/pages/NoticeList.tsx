@@ -44,28 +44,28 @@ const NoticeList = () => {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Bell className="h-6 w-6 text-primary" />
+            <h1 className="text-lg md:text-2xl font-bold flex items-center gap-2">
+              <Bell className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               공지사항
             </h1>
-            <p className="text-muted-foreground mt-1 text-sm">사내 주요 소식과 안내사항을 확인하세요.</p>
+            <p className="text-muted-foreground mt-1 text-xs md:text-sm">사내 주요 소식과 안내사항을 확인하세요.</p>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
             <div className="relative flex-1 md:w-64">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="제목 또는 내용 검색" className="pl-9" />
+              <Input placeholder="제목 또는 내용 검색" className="pl-9 text-xs md:text-sm h-9 md:h-10" />
             </div>
-            <Button>검색</Button>
+            <Button size="sm" className="h-9 md:h-10">검색</Button>
           </div>
         </div>
 
         {/* Notice Board Table */}
         <Card className="border-none shadow-md bg-white">
           <CardContent className="p-0">
-            <div className="w-full text-sm text-left overflow-x-auto">
+            <div className="w-full text-sm text-left overflow-hidden">
               <div className="w-full">
                 {/* Table Header */}
-                <div className="flex items-center bg-slate-50 border-b border-border py-3 px-3 md:px-6 font-medium text-slate-500">
+                <div className="flex items-center bg-slate-50 border-b border-border py-3 px-3 md:px-6 font-medium text-slate-500 text-xs md:text-sm">
                   <div className="w-10 md:w-16 text-center shrink-0">번호</div>
                   <div className="w-16 md:w-24 text-center shrink-0">구분</div>
                   <div className="flex-1 px-2 md:px-4">제목</div>
@@ -100,7 +100,7 @@ const NoticeList = () => {
                             {notice.category}
                           </Badge>
                         </div>
-                        <div className={`flex-1 min-w-0 px-2 md:px-4 font-medium transition-colors truncate ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
+                        <div className={`flex-1 min-w-0 px-2 md:px-4 font-medium transition-colors truncate text-sm ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
                           {notice.title}
                         </div>
                         <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">

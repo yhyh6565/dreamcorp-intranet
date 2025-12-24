@@ -24,7 +24,7 @@ const MessageWidget = () => {
         <Card className="border-none shadow-md bg-white h-full flex flex-col">
             <CardHeader className="pb-3 border-b border-slate-50">
                 <CardTitle
-                    className="flex items-center justify-between text-base cursor-pointer group"
+                    className="flex items-center justify-between text-sm md:text-base cursor-pointer group"
                     onClick={() => navigate('/messages')}
                 >
                     <div className="flex items-center gap-2 text-slate-800 group-hover:text-primary transition-colors">

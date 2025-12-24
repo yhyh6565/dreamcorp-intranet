@@ -32,7 +32,7 @@ const NoticeWidget = () => {
                     className="flex items-center justify-between cursor-pointer group"
                     onClick={() => navigate('/notices')}
                 >
-                    <CardTitle className="flex items-center gap-2 text-lg text-slate-800 group-hover:text-primary transition-colors">
+                    <CardTitle className="flex items-center gap-2 text-sm md:text-lg text-slate-800 group-hover:text-primary transition-colors">
                         <Bell className="h-5 w-5 text-primary" />
                         공지사항
                     </CardTitle>

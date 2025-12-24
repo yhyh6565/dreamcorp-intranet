@@ -62,18 +62,18 @@ const ShadowAssignment = () => {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                            <ShieldAlert className="h-6 w-6 text-red-600" />
+                        <h2 className="text-lg md:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                            <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-red-600" />
                             담당 어둠 배정
                         </h2>
-                        <p className="text-slate-500 mt-1">
+                        <p className="text-slate-500 mt-1 text-xs md:text-base">
                             현재 <span className="font-bold text-red-600">{unassignedShadows.length}</span>건의 관리 부재 항목이 있습니다. 즉시 담당자를 배정하십시오.
                         </p>
                     </div>
                 </div>
 
                 <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
-                    <Table className="w-full table-fixed">
+                    <Table className="w-full table-fixed text-xs md:text-sm">
                         <TableHeader className="bg-slate-50">
                             <TableRow>
                                 <TableHead className="w-[80px]">GRADE</TableHead>
@@ -101,13 +101,13 @@ const ShadowAssignment = () => {
                                                 {shadow.grade}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="font-mono font-medium text-slate-700 truncate max-w-[100px]" title={shadow.code}>
+                                        <TableCell className="font-mono font-medium text-slate-700 truncate max-w-[100px] text-xs md:text-sm" title={shadow.code}>
                                             {shadow.code}
                                         </TableCell>
-                                        <TableCell className="text-slate-600 truncate max-w-[120px]" title={shadow.locationText}>
+                                        <TableCell className="text-slate-600 truncate max-w-[120px] text-xs md:text-sm" title={shadow.locationText}>
                                             {shadow.locationText}
                                         </TableCell>
-                                        <TableCell className="font-bold text-slate-800 truncate max-w-[100px]" title={shadow.name}>
+                                        <TableCell className="font-bold text-slate-800 truncate max-w-[100px] text-xs md:text-sm" title={shadow.name}>
                                             {shadow.name}
                                         </TableCell>
                                         <TableCell className="text-right">

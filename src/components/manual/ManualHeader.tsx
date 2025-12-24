@@ -13,8 +13,8 @@ export const ManualHeader = ({ manual, statusInfo }: ManualHeaderProps) => {
         <div className="space-y-4 border-b border-slate-200 pb-6">
             <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{manual.title}</h1>
-                    <p className="font-mono text-sm text-slate-500">Doc No. {manual.id}</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">{manual.title}</h1>
+                    <p className="font-mono text-xs md:text-sm text-slate-500">Doc No. {manual.id}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                     <Badge variant="outline" className={cn("font-bold px-3 py-1", getGradeColor(manual.grade))}>

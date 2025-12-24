@@ -146,7 +146,7 @@ const WelfareMall = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-slate-200 relative">
       {/* Local Header - Minimalist */}
-      <header className="h-24 sticky top-0 bg-white z-40 flex items-center justify-between px-4 md:px-12 border-b border-transparent transition-colors duration-300 hover:border-slate-100">
+      <header className="h-16 md:h-24 sticky top-0 bg-white z-40 flex items-center justify-between px-4 md:px-12 border-b border-transparent transition-colors duration-300 hover:border-slate-100">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-light tracking-wide text-foreground/90 uppercase font-sans">
             백일몽 임직원 복지몰
@@ -189,20 +189,20 @@ const WelfareMall = () => {
         </div>
       </header>
 
-      <main className="max-w-[1600px] mx-auto px-4 md:px-12 py-16 animate-fade-in">
+      <main className="max-w-[1600px] mx-auto px-4 md:px-12 py-8 md:py-16 animate-fade-in">
         {/* Tab Layout - Clean Text Tabs */}
-        <Tabs defaultValue="shopping" className="w-full space-y-16">
+        <Tabs defaultValue="shopping" className="w-full space-y-8 md:space-y-16">
           <div className="flex justify-start border-b border-slate-100">
             <TabsList className="bg-transparent p-0 h-auto space-x-12">
               <TabsTrigger
                 value="shopping"
-                className="rounded-none bg-transparent px-0 py-4 text-sm font-medium tracking-widest text-slate-400 data-[state=active]:text-slate-900 data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 bg-none"
+                className="rounded-none bg-transparent px-0 py-2 md:py-4 text-sm font-medium tracking-widest text-slate-400 data-[state=active]:text-slate-900 data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 bg-none"
               >
                 PRODUCT / ALL
               </TabsTrigger>
               <TabsTrigger
                 value="application"
-                className="rounded-none bg-transparent px-0 py-4 text-sm font-medium tracking-widest text-slate-400 data-[state=active]:text-slate-900 data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 bg-none"
+                className="rounded-none bg-transparent px-0 py-2 md:py-4 text-sm font-medium tracking-widest text-slate-400 data-[state=active]:text-slate-900 data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 bg-none"
               >
                 WELFARE / SERVICES
               </TabsTrigger>
@@ -210,7 +210,7 @@ const WelfareMall = () => {
           </div>
 
           {/* Shopping Tab */}
-          <TabsContent value="shopping" className="space-y-12 outline-none">
+          <TabsContent value="shopping" className="space-y-6 md:space-y-12 outline-none">
             {/* Minimal Category Filter */}
             <div className="flex gap-8 justify-start">
               {categories.map(category => (
@@ -224,7 +224,7 @@ const WelfareMall = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-8 md:gap-y-16">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-6 md:gap-y-16">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}

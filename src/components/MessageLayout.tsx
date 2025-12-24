@@ -31,8 +31,8 @@ const MessageLayout = ({ children }: MessageLayoutProps) => {
                     id ? "hidden md:flex" : "flex",
                     isNavigationDisabled && "pointer-events-none opacity-50 select-none grayscale"
                 )}>
-                    <div className="p-4 border-b border-border bg-white">
-                        <h1 className="text-xl font-bold mb-4">쪽지함</h1>
+                    <div className="p-3 md:p-4 border-b border-border bg-white">
+                        <h1 className="text-lg md:text-xl font-bold mb-3 md:mb-4">쪽지함</h1>
                         <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <input

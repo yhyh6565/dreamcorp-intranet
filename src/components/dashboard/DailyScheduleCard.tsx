@@ -35,7 +35,7 @@ const DailyScheduleCard = () => {
         >
             <div className="absolute top-[-20%] right-[-20%] w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors" />
             <CardHeader className="pb-2">
-                <CardTitle className="text-base font-medium text-blue-100 flex items-center justify-between">
+                <CardTitle className="text-sm md:text-base font-medium text-blue-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
                         <span>오늘의 일정</span>
@@ -44,16 +44,16 @@ const DailyScheduleCard = () => {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="mt-2">
-                    <span className="text-4xl font-bold tracking-tight">
+                <div className="mt-1 md:mt-2">
+                    <span className="text-3xl md:text-4xl font-bold tracking-tight">
                         {todayEvent ? 'D-Day' : 'No Plan'}
                     </span>
-                    <p className="text-blue-100 text-sm mt-1">
+                    <p className="text-blue-100 text-xs md:text-sm mt-1">
                         {todayEvent ? '예정된 점검 진행' : '오늘 예정된 점검이 없습니다'}
                     </p>
                 </div>
-                <div className="mt-6 pt-4 border-t border-white/20">
-                    <div className="flex justify-between items-center text-sm">
+                <div className="mt-4 pt-3 md:mt-6 md:pt-4 border-t border-white/20">
+                    <div className="flex justify-between items-center text-xs md:text-sm">
                         {todayEvent ? (
                             <>
                                 <span>{todayEvent.time}</span>

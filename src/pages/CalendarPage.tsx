@@ -16,6 +16,7 @@ interface CalendarEvent {
   title: string;
   type: 'mission' | 'company' | 'personal' | 'special';
   time?: string;
+  originalDate?: Date; // To handle recurring logic if needed, but simple filtering is fine
 }
 
 const CalendarPage = () => {
@@ -185,25 +186,36 @@ const CalendarPage = () => {
       default: return '';
     }
   };
+  // Weekly View Logic (Mobile)
+  const today = new Date();
+  const weekDates = useMemo(() => {
+    const dates = [];
+    for (let i = -3; i <= 3; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      dates.push(d);
+    }
+    return dates;
+  }, []); // Only calculate once based on today
 
   return (
     <Layout>
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-              <CalendarIcon className="w-8 h-8 text-primary" />
+            <h1 className="text-lg md:text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5 md:w-8 md:h-8 text-primary" />
               근무 일정표
             </h1>
-            <p className="text-slate-500 mt-1">
+            <p className="text-xs md:text-base text-slate-500 mt-1">
               백일몽 주식회사 정기 일정 및 특수 임무 현황
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border shadow-sm">
-            <Clock className="w-4 h-4 text-slate-400" />
-            <span className="text-sm font-medium text-slate-600">
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 md:px-4 md:py-2 rounded-full border shadow-sm">
+            <Clock className="w-3.5 h-3.5 md:w-4 md:h-4 text-slate-400" />
+            <span className="text-xs md:text-sm font-medium text-slate-600">
               {formatDate(new Date(), 'korean')}
             </span>
           </div>
@@ -211,14 +223,17 @@ const CalendarPage = () => {
 
         {/* Calendar Card */}
         <Card className="shadow-lg border-none ring-1 ring-slate-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 md:pb-4 border-b">
             <div className="flex items-center gap-2">
-              <CardTitle className="text-xl font-bold font-mono">
+              <CardTitle className="text-xl font-bold font-mono hidden md:block">
                 {currentDate.getFullYear()}.{String(currentDate.getMonth() + 1).padStart(2, '0')}
+              </CardTitle>
+              <CardTitle className="text-base font-bold font-mono md:hidden">
+                오늘의 일정
               </CardTitle>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 hidden md:flex">
               <Button variant="outline" size="icon" onClick={() => navigateMonth('prev')} className="h-8 w-8">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -229,7 +244,8 @@ const CalendarPage = () => {
           </CardHeader>
           <CardContent className="p-0">
             {/* Week Headers */}
-            <div className="grid grid-cols-7 border-b bg-slate-50/50">
+            {/* Desktop Grid View */}
+            <div className="hidden md:grid grid-cols-7 border-b bg-slate-50/50">
               {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
                 <div
                   key={day}
@@ -244,7 +260,7 @@ const CalendarPage = () => {
             </div>
 
             {/* Calendar Days */}
-            <div className="grid grid-cols-7 auto-rows-fr bg-slate-100 gap-px border-b">
+            <div className="hidden md:grid grid-cols-7 auto-rows-fr bg-slate-100 gap-px border-b">
               {calendarGrid.map((date, index) => {
                 const dayEvents = getEventsForDate(date);
                 const weekend = date ? isWeekend(date) : false;
@@ -295,6 +311,63 @@ const CalendarPage = () => {
                         </div>
                       </>
                     )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Mobile Weekly View */}
+            <div className="md:hidden divide-y divide-slate-100">
+              <div className="bg-slate-50 p-3 text-center text-sm font-medium text-slate-500 border-b border-slate-100">
+                이번 주 일정 ({formatDate(weekDates[0], 'short')} - {formatDate(weekDates[6], 'short')})
+              </div>
+              {weekDates.map((dateStr) => {
+                const dateObj = new Date(dateStr);
+                const dayEvents = getEventsForDate(dateObj); // Reusing existing helper!
+                const isTdy = isToday(dateObj);
+                const isWknd = isWeekend(dateObj);
+                const isHldy = isHoliday(dateObj);
+
+                return (
+                  <div key={dateObj.toISOString()} className={cn("p-4 flex gap-4 transition-colors", isTdy ? "bg-blue-50/50" : "hover:bg-slate-50")}>
+                    {/* Date Column */}
+                    <div className="flex flex-col items-center min-w-[3rem] shrink-0">
+                      <span className={cn(
+                        "text-xl font-bold",
+                        isHldy || dateObj.getDay() === 0 ? "text-rose-500" :
+                          dateObj.getDay() === 6 ? "text-blue-500" : "text-slate-700"
+                      )}>
+                        {dateObj.getDate()}
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        {['일', '월', '화', '수', '목', '금', '토'][dateObj.getDay()]}
+                      </span>
+                      {isTdy && <Badge variant="default" className="mt-1 text-[10px] px-1 py-0 h-4">오늘</Badge>}
+                    </div>
+
+                    {/* Events Column */}
+                    <div className="flex-1 space-y-2 py-1">
+                      {dayEvents.length > 0 ? (
+                        dayEvents.map(event => (
+                          <div key={event.id} className="flex gap-2 items-start">
+                            {event.time && <span className="text-xs font-mono text-slate-400 mt-0.5">{event.time}</span>}
+                            <Badge
+                              variant={getEventBadgeVariant(event.type)}
+                              className={cn(
+                                "font-normal text-sm px-2 py-1 h-auto cursor-pointer hover:shadow-sm transition-all whitespace-normal text-left flex-1",
+                                getEventBadgeClass(event.type)
+                              )}
+                            >
+                              {event.title}
+                            </Badge>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-xs text-slate-400 py-2 italic opacity-50">
+                          일정이 없습니다.
+                        </div>
+                      )}
+                    </div>
                   </div>
                 );
               })}

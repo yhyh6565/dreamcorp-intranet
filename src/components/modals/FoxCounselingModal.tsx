@@ -62,7 +62,7 @@ const FoxCounselingModal = ({ open, onClose }: FoxCounselingModalProps) => {
         <DialogHeader>
           <DialogTitle>여우상담실 예약</DialogTitle>
         </DialogHeader>
-        
+
         <div className="py-4">
           {/* 주간 네비게이션 */}
           <div className="flex items-center justify-between mb-4">
@@ -82,11 +82,11 @@ const FoxCounselingModal = ({ open, onClose }: FoxCounselingModalProps) => {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="border border-border p-2 bg-muted text-muted-foreground text-sm w-24">시간</th>
+                  <th className="border border-border p-2 bg-muted text-muted-foreground text-xs md:text-sm w-20 md:w-24">시간</th>
                   {weekDays.map((day) => (
-                    <th key={day.toISOString()} className="border border-border p-2 bg-muted text-center">
-                      <div className="text-xs text-muted-foreground">{format(day, 'EEE', { locale: ko })}</div>
-                      <div className="text-sm font-medium text-foreground">{format(day, 'd')}</div>
+                    <th key={day.toISOString()} className="border border-border p-1 md:p-2 bg-muted text-center">
+                      <div className="text-[10px] md:text-xs text-muted-foreground">{format(day, 'EEE', { locale: ko })}</div>
+                      <div className="text-xs md:text-sm font-medium text-foreground">{format(day, 'd')}</div>
                     </th>
                   ))}
                 </tr>
@@ -94,7 +94,7 @@ const FoxCounselingModal = ({ open, onClose }: FoxCounselingModalProps) => {
               <tbody>
                 {timeSlots.map((slot) => (
                   <tr key={slot.start}>
-                    <td className="border border-border p-2 text-xs text-muted-foreground text-center">
+                    <td className="border border-border p-2 text-[10px] md:text-xs text-muted-foreground text-center">
                       {slot.label}
                     </td>
                     {weekDays.map((day) => {
@@ -106,13 +106,12 @@ const FoxCounselingModal = ({ open, onClose }: FoxCounselingModalProps) => {
                       return (
                         <td
                           key={slotKey}
-                          className={`border border-border p-2 text-center cursor-pointer transition-colors ${
-                            isOccupied || isPast
-                              ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                              : isSelected
+                          className={`border border-border p-2 text-center cursor-pointer transition-colors text-[10px] md:text-sm ${isOccupied || isPast
+                            ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                            : isSelected
                               ? 'bg-primary text-primary-foreground'
                               : 'hover:bg-secondary'
-                          }`}
+                            }`}
                           onClick={() => {
                             if (!isOccupied && !isPast) {
                               setSelectedSlot(slotKey);
@@ -145,10 +144,10 @@ const FoxCounselingModal = ({ open, onClose }: FoxCounselingModalProps) => {
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>취소</Button>
-          <Button onClick={handleSubmit}>예약</Button>
-        </DialogFooter>
+        <div className="flex justify-center gap-3 p-4 pt-2">
+          <Button variant="outline" onClick={onClose} className="w-24">취소</Button>
+          <Button onClick={handleSubmit} className="w-24">예약</Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

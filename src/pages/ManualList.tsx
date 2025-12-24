@@ -92,7 +92,7 @@ const ManualList = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-3 md:space-y-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Home className="h-4 w-4" />
@@ -102,48 +102,51 @@ const ManualList = () => {
 
         {/* Header */}
         <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <BookOpen className="h-7 w-7 text-primary" />
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">어둠 관리 매뉴얼</h1>
+          <div className="flex items-center gap-2 md:gap-3">
+            <BookOpen className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+            <h1 className="text-xl md:text-3xl font-bold text-foreground">어둠 관리 매뉴얼</h1>
           </div>
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-muted-foreground text-xs md:text-base">
             백일몽 주식회사 공식 탐사 가이드라인입니다.
           </p>
         </div>
 
         {/* Toolbar: Search & Filters */}
-        <div className="flex flex-col md:flex-row gap-3">
+        {/* Toolbar: Search & Filters */}
+        <div className="flex flex-col md:flex-row gap-2 md:gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="식별 코드 또는 어둠 명칭 검색..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background"
+              className="pl-9 text-xs md:text-base md:pl-10 bg-background h-9 md:h-10"
             />
           </div>
-          <Select value={gradeFilter} onValueChange={setGradeFilter}>
-            <SelectTrigger className="w-full md:w-[140px] bg-background">
-              <SelectValue placeholder="등급 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">전체 등급</SelectItem>
-              {grades.map(grade => (
-                <SelectItem key={grade} value={grade}>{grade}등급</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full md:w-[140px] bg-background">
-              <SelectValue placeholder="관리 상태" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">전체 상태</SelectItem>
-              {statuses.map(status => (
-                <SelectItem key={status.value} value={status.value}>{status.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2 w-full md:w-auto">
+            <Select value={gradeFilter} onValueChange={setGradeFilter}>
+              <SelectTrigger className="w-full md:w-[140px] bg-background h-9 md:h-10 text-xs md:text-base">
+                <SelectValue placeholder="등급 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체 등급</SelectItem>
+                {grades.map(grade => (
+                  <SelectItem key={grade} value={grade}>{grade}등급</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full md:w-[140px] bg-background h-9 md:h-10 text-xs md:text-base">
+                <SelectValue placeholder="관리 상태" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체 상태</SelectItem>
+                {statuses.map(status => (
+                  <SelectItem key={status.value} value={status.value}>{status.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Data Table */}
@@ -192,7 +195,7 @@ const ManualList = () => {
                       <TableCell className="text-center font-mono text-muted-foreground">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="font-mono text-sm">
+                      <TableCell className="font-mono text-xs md:text-sm">
                         {item.id}
                       </TableCell>
                       <TableCell className="text-center">
