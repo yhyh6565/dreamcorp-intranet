@@ -72,12 +72,12 @@ const MessageLayout = ({ children }: MessageLayoutProps) => {
                                             <span className="text-xs text-muted-foreground">{message.date}</span>
                                         </div>
                                         <span className={cn(
-                                            "text-sm font-medium truncate",
+                                            "text-sm font-medium truncate max-w-[250px] md:max-w-none",
                                             id === message.id ? "text-foreground" : "text-slate-600"
                                         )}>
                                             {message.title}
                                         </span>
-                                        <p className="text-xs text-muted-foreground line-clamp-1">
+                                        <p className="text-xs text-muted-foreground line-clamp-1 max-w-[250px] md:max-w-none">
                                             {message.preview}
                                         </p>
                                         {message.isSpam && (
