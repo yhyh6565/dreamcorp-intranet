@@ -68,6 +68,17 @@
 
 ---
 
+## 📱 모바일 최적화 (Mobile Optimization)
+
+언제 어디서나 업무를 볼 수 있도록, 모든 페이지에 대해 **모바일 반응형 디자인**이 적용되었습니다.
+
+*   **Responsive Layout:** PC의 넓은 화면과 모바일의 좁은 화면 각각에 최적화된 레이아웃을 제공합니다.
+*   **Touch-Friendly UI:** 모바일 환경에서 터치하기 쉬운 버튼 크기와 간격을 적용했습니다.
+*   **Space Efficiency:** 작은 화면에서도 정보가 잘 보이도록 불필요한 요소를 숨기거나, 폰트 크기 및 여백을 세밀하게 조정했습니다.
+*   **상세 문서:** 각 페이지별 PC/Mobile UX 차이점은 `docs/MOBILE_AND_DESKTOP_UX.md` 문서에서 상세히 확인할 수 있습니다.
+
+---
+
 ## 📂 프로젝트 구조 (Project Structure)
 
 ```text
