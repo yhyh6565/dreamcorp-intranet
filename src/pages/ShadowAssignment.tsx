@@ -107,7 +107,7 @@ const ShadowAssignment = () => {
                                         <TableCell className="text-slate-600 truncate max-w-[120px] text-sm hidden md:table-cell" title={shadow.locationText}>
                                             {shadow.locationText}
                                         </TableCell>
-                                        <TableCell className="font-bold text-slate-800 truncate max-w-[100px] text-xs md:text-sm" title={shadow.name}>
+                                        <TableCell className="font-bold text-slate-800 truncate max-w-[70px] md:max-w-[100px] text-xs md:text-sm" title={shadow.name}>
                                             {shadow.name}
                                         </TableCell>
                                         <TableCell className="text-right">
