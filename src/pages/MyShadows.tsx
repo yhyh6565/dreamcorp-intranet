@@ -108,11 +108,11 @@ const MyShadows = () => {
         <Layout>
             <div className="space-y-6">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                        <ShieldAlert className="h-6 w-6 text-indigo-600" />
+                    <h2 className="text-lg md:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                        <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-indigo-600" />
                         담당 어둠 (Assigned Shadows)
                     </h2>
-                    <p className="text-slate-500 mt-1">
+                    <p className="text-xs md:text-base text-slate-500 mt-1">
                         {userName} 님의 담당 부재 관리 현황입니다.
                     </p>
                 </div>

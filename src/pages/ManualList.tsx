@@ -154,9 +154,9 @@ const ManualList = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-secondary/50 hover:bg-secondary/50">
-                <TableHead className="w-[60px] text-center">No</TableHead>
-                <TableHead className="w-[150px]">식별 코드</TableHead>
-                <TableHead className="w-[80px] text-center">등급</TableHead>
+                <TableHead className="w-[40px] md:w-[60px] text-center">No</TableHead>
+                <TableHead className="w-[100px] md:w-[150px]">식별 코드</TableHead>
+                <TableHead className="w-[50px] md:w-[80px] text-center">등급</TableHead>
                 <TableHead>어둠 명칭</TableHead>
                 <TableHead className="w-[100px] text-center hidden md:table-cell">관리 상태</TableHead>
                 <TableHead className="w-[120px] hidden md:table-cell">담당 부서</TableHead>
@@ -200,7 +200,7 @@ const ManualList = () => {
                       </TableCell>
                       <TableCell className="text-center">
                         <span className={cn(
-                          "inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold",
+                          "inline-flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full text-[10px] md:text-sm font-bold",
                           getGradeColor(item.grade)
                         )}>
                           {item.grade}

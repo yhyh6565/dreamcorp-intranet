@@ -62,8 +62,8 @@ const ShadowAssignment = () => {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-lg md:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                            <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-red-600" />
+                        <h2 className="text-base md:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                            <ShieldAlert className="h-4 w-4 md:h-6 md:w-6 text-red-600" />
                             담당 어둠 배정
                         </h2>
                         <p className="text-slate-500 mt-1 text-xs md:text-base">
@@ -76,11 +76,11 @@ const ShadowAssignment = () => {
                     <Table className="w-full table-fixed text-xs md:text-sm">
                         <TableHeader className="bg-slate-50">
                             <TableRow>
-                                <TableHead className="w-[80px]">GRADE</TableHead>
-                                <TableHead className="w-[100px]">CODE</TableHead>
-                                <TableHead>LOCATION</TableHead>
+                                <TableHead className="w-[50px] md:w-[80px]">GRADE</TableHead>
+                                <TableHead className="w-[80px] md:w-[100px]">CODE</TableHead>
+                                <TableHead className="hidden md:table-cell">LOCATION</TableHead>
                                 <TableHead>NAME</TableHead>
-                                <TableHead className="w-[70px] text-right">ACTION</TableHead>
+                                <TableHead className="w-[60px] md:w-[70px] text-right">ACTION</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -97,14 +97,14 @@ const ShadowAssignment = () => {
                                 unassignedShadows.map((shadow) => (
                                     <TableRow key={shadow.code} className="hover:bg-slate-50/50">
                                         <TableCell>
-                                            <Badge variant="secondary" className={`${getGradeColor(shadow.grade)} font-bold border-none`}>
+                                            <Badge variant="secondary" className={`${getGradeColor(shadow.grade)} font-bold border-none text-[10px] md:text-xs px-1.5 md:px-2.5`}>
                                                 {shadow.grade}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="font-mono font-medium text-slate-700 truncate max-w-[100px] text-xs md:text-sm" title={shadow.code}>
+                                        <TableCell className="font-mono font-medium text-slate-700 truncate max-w-[80px] md:max-w-[100px] text-xs md:text-sm" title={shadow.code}>
                                             {shadow.code}
                                         </TableCell>
-                                        <TableCell className="text-slate-600 truncate max-w-[120px] text-xs md:text-sm" title={shadow.locationText}>
+                                        <TableCell className="text-slate-600 truncate max-w-[120px] text-sm hidden md:table-cell" title={shadow.locationText}>
                                             {shadow.locationText}
                                         </TableCell>
                                         <TableCell className="font-bold text-slate-800 truncate max-w-[100px] text-xs md:text-sm" title={shadow.name}>

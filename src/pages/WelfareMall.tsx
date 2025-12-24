@@ -148,9 +148,9 @@ const WelfareMall = () => {
       {/* Local Header - Minimalist */}
       <header className="h-16 md:h-24 sticky top-0 bg-white z-40 flex items-center justify-between px-4 md:px-12 border-b border-transparent transition-colors duration-300 hover:border-slate-100">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-light tracking-wide text-foreground/90 uppercase font-sans">
+          <h1 className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-0 text-lg md:text-2xl font-light tracking-wide text-foreground/90 uppercase font-sans">
             백일몽 임직원 복지몰
-            <span className="ml-2 text-xs font-bold text-primary tracking-widest border border-primary/20 px-2 py-0.5 rounded-full">PREMIUM</span>
+            <span className="ml-0 mt-0.5 md:mt-0 md:ml-2 text-[10px] md:text-xs font-bold text-primary tracking-widest border border-primary/20 px-2 py-0.5 rounded-full">PREMIUM</span>
           </h1>
         </div>
 
@@ -169,7 +169,7 @@ const WelfareMall = () => {
 
           {/* Nav Icons */}
           <nav className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="hover:bg-transparent hover:text-blue-600 transition-colors">
+            <Button variant="ghost" size="icon" className="hidden md:inline-flex hover:bg-transparent hover:text-blue-600 transition-colors">
               <Search className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon" className="hover:bg-transparent hover:text-blue-600 transition-colors">
@@ -287,7 +287,7 @@ const WelfareMall = () => {
           <TabsContent value="application" className="space-y-16 outline-none">
             {/* Housing Card */}
             <div className="group cursor-pointer relative overflow-hidden bg-slate-50 border border-slate-100 flex flex-col md:flex-row h-auto md:h-[500px]">
-              <div className="w-full h-64 md:w-1/2 md:h-full bg-slate-200 relative overflow-hidden">
+              <div className="hidden md:block md:w-1/2 md:h-full bg-slate-200 relative overflow-hidden">
                 <img src="/pic/사택 전경.png" alt="Office Tel" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/20" />
                 <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-sm p-8 border-t border-slate-100">
@@ -295,17 +295,17 @@ const WelfareMall = () => {
                   <p className="text-slate-500 mt-2">Premium Housing Service</p>
                 </div>
               </div>
-              <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
-                <div className="space-y-6">
-                  <span className="text-blue-600 font-mono text-sm tracking-widest uppercase">Available Now</span>
-                  <h3 className="text-3xl font-bold text-slate-900 leading-tight">
+              <div className="w-full md:w-1/2 p-6 md:p-16 flex flex-col justify-center">
+                <div className="space-y-4 md:space-y-6">
+                  <span className="text-blue-600 font-mono text-xs md:text-sm tracking-widest uppercase">Available Now</span>
+                  <h3 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
                     임직원 전용 오피스텔<br />입주 신청
                   </h3>
-                  <p className="text-slate-500 leading-relaxed max-w-md">
+                  <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-md">
                     사옥 도보 15분 거리, 최고급 풀옵션 오피스텔.<br />
                     월 10만 원 상당의 호텔식 침구 교체 서비스와<br />웰컴 기프트 패키지를 제공합니다.
                   </p>
-                  <Button className="mt-8 bg-slate-900 text-white rounded-none px-10 py-6 hover:bg-blue-600 transition-colors uppercase tracking-widest text-xs">
+                  <Button className="mt-4 md:mt-8 w-full md:w-auto bg-slate-900 text-white rounded-none px-6 py-4 md:px-10 md:py-6 hover:bg-blue-600 transition-colors uppercase tracking-widest text-[10px] md:text-xs">
                     Apply Now
                   </Button>
                 </div>
@@ -313,17 +313,17 @@ const WelfareMall = () => {
             </div>
 
             {/* Health Checkup - Minimal Row */}
-            <div className="border-t border-b border-slate-100 py-12 flex flex-col md:flex-row items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer px-8">
-              <div className="flex items-center gap-8">
-                <div className="h-16 w-16 bg-slate-100 flex items-center justify-center rounded-full text-2xl">
+            <div className="border-t border-b border-slate-100 py-8 md:py-12 flex flex-col md:flex-row items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer px-6 md:px-8 gap-6 md:gap-0">
+              <div className="flex items-center gap-6 md:gap-8 w-full md:w-auto">
+                <div className="h-12 w-12 md:h-16 md:w-16 bg-slate-100 flex items-center justify-center rounded-full text-xl md:text-2xl shrink-0">
                   🏥
                 </div>
                 <div>
-                  <h3 className="text-xl font-medium text-slate-900">2025 종합 건강검진</h3>
-                  <p className="text-slate-500 mt-1">지정 대학 병원 (아산/삼성/세브란스) VIP 검진 프로그램</p>
+                  <h3 className="text-lg md:text-xl font-medium text-slate-900">2025 종합 건강검진</h3>
+                  <p className="text-slate-500 mt-1 text-xs md:text-base">지정 대학 병원 (아산/삼성/세브란스) VIP 검진 프로그램</p>
                 </div>
               </div>
-              <Button variant="outline" className="rounded-none border-slate-300 px-8 py-6 uppercase text-xs tracking-widest hover:bg-slate-900 hover:text-white transition-colors">
+              <Button variant="outline" className="w-full md:w-auto rounded-none border-slate-300 px-6 py-3 md:px-8 md:py-6 uppercase text-[10px] md:text-xs tracking-widest hover:bg-slate-900 hover:text-white transition-colors">
                 Reservation
               </Button>
             </div>

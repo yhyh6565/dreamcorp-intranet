@@ -63,9 +63,9 @@ const AnnexVisitModal = ({ open, onClose }: AnnexVisitModalProps) => {
             />
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>취소</Button>
-          <Button onClick={handleSubmit}>신청</Button>
+        <DialogFooter className="flex-row gap-2 sm:justify-end w-full">
+          <Button variant="outline" onClick={onClose} className="flex-1 sm:flex-none">취소</Button>
+          <Button onClick={handleSubmit} className="flex-1 sm:flex-none">신청</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -100,7 +100,7 @@ const NoticeList = () => {
                             {notice.category}
                           </Badge>
                         </div>
-                        <div className={`flex-1 min-w-0 px-2 md:px-4 font-medium transition-colors truncate text-sm ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
+                        <div className={`flex-1 min-w-0 px-2 md:px-4 font-medium transition-colors truncate text-sm max-w-[150px] md:max-w-none ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
                           {notice.title}
                         </div>
                         <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">
