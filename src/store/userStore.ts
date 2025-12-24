@@ -4,6 +4,7 @@ import { useShadowStore } from './shadowStore';
 
 interface UserState {
   userName: string;
+  department: string;
   team: string;
   rank: string;
   employeeId: string;
@@ -39,6 +40,9 @@ interface UserState {
   completeSecurityEasterEgg: () => void;
   isPointGlitching: boolean;
   setPointGlitching: (isGlitching: boolean) => void;
+  getSecurityLevel: () => string;
+  checkSecurityClearance: (requiredLevel: string) => boolean;
+  checkRank: (requiredRank: string) => boolean;
 }
 
 const getRandomTeam = () => {
@@ -58,26 +62,27 @@ const generateRandomEmployeeId = () => {
   return `Qterw-Z-${Math.floor(1000 + Math.random() * 9000)}`;
 };
 
-export const PREDEFINED_USERS: Record<string, { name: string; team: string; rank: string; points: number }> = {
-  '김솔음': { name: '김솔음', team: 'D조', rank: '주임', points: 154000 },
-  '백석주': { name: '백석주', team: 'A조', rank: '과장', points: 423000 },
-  '진나솔': { name: '진나솔', team: 'A조', rank: '대리', points: 305000 },
-  '이석종': { name: '이석종', team: 'A조', rank: '대리', points: 102000 },
-  '이성해': { name: '이성해', team: 'B조', rank: '대리', points: 201000 },
-  '강도준': { name: '강도준', team: 'C조', rank: '대리', points: 8000 },
-  '이자헌': { name: '이자헌', team: 'D조', rank: '과장', points: 365000 },
-  '은하제': { name: '은하제', team: 'D조', rank: '대리', points: 165000 },
-  '박민성': { name: '박민성', team: 'D조', rank: '주임', points: 150200 },
-  '백사헌': { name: '백사헌', team: 'F조', rank: '사원', points: 51000 },
-  '장허운': { name: '장허운', team: 'F조', rank: '사원', points: 12000 },
-  '강이학': { name: '강이학', team: 'I조', rank: '사원', points: 48000 },
-  '고영은': { name: '고영은', team: 'R조', rank: '사원', points: 31000 },
+export const PREDEFINED_USERS: Record<string, { name: string; department: string; team: string; rank: string; points: number }> = {
+  '김솔음': { name: '김솔음', department: '현장탐사팀', team: 'D조', rank: '주임', points: 277200 },
+  '백석주': { name: '백석주', department: '현장탐사팀', team: 'A조', rank: '과장', points: 423000 },
+  '진나솔': { name: '진나솔', department: '현장탐사팀', team: 'A조', rank: '대리', points: 305000 },
+  '이석종': { name: '이석종', department: '현장탐사팀', team: 'A조', rank: '대리', points: 102000 },
+  '이성해': { name: '이성해', department: '현장탐사팀', team: 'B조', rank: '대리', points: 201000 },
+  '강도준': { name: '강도준', department: '현장탐사팀', team: 'C조', rank: '대리', points: 8000 },
+  '이자헌': { name: '이자헌', department: '현장탐사팀', team: 'D조', rank: '과장', points: 365000 },
+  '은하제': { name: '은하제', department: '현장탐사팀', team: 'D조', rank: '대리', points: 165000 },
+  '박민성': { name: '박민성', department: '현장탐사팀', team: 'D조', rank: '주임', points: 150200 },
+  '백사헌': { name: '백사헌', department: '현장탐사팀', team: 'F조', rank: '사원', points: 51000 },
+  '장허운': { name: '장허운', department: '현장탐사팀', team: 'F조', rank: '사원', points: 12000 },
+  '강이학': { name: '강이학', department: '현장탐사팀', team: 'I조', rank: '사원', points: 48000 },
+  '고영은': { name: '고영은', department: '현장탐사팀', team: 'R조', rank: '사원', points: 31000 },
 };
 
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
       userName: '',
+      department: '',
       team: '',
       rank: '',
       employeeId: '',
@@ -96,6 +101,7 @@ export const useUserStore = create<UserState>()(
         if (user) {
           set({
             userName: user.name,
+            department: user.department,
             team: user.team,
             rank: user.rank,
             employeeId: '',
@@ -104,7 +110,8 @@ export const useUserStore = create<UserState>()(
           });
         } else {
           set({
-            userName: generateRandomName(),
+            userName: id,
+            department: '현장탐사팀',
             team: getRandomTeam(),
             rank: '사원',
             employeeId: generateRandomEmployeeId(),
@@ -117,6 +124,7 @@ export const useUserStore = create<UserState>()(
       logout: () => {
         set({
           userName: '',
+          department: '',
           team: '',
           rank: '',
           employeeId: '',
@@ -207,9 +215,51 @@ export const useUserStore = create<UserState>()(
         set({ isNavigationDisabled: disabled });
       },
 
+
       isPointGlitching: false,
       setPointGlitching: (isGlitching: boolean) => {
         set({ isPointGlitching: isGlitching });
+      },
+
+      // Security Helper (Not persisted state, but derived getter)
+      getSecurityLevel: () => {
+        const { userName } = get();
+        if (userName === '이자헌' || userName === '백석주') return 'C';
+        if (userName === '김솔음') return 'D';
+        return 'D';
+      },
+
+      checkSecurityClearance: (requiredLevel: string) => {
+        const { department, checkRank } = get();
+
+        if (requiredLevel === 'A') return false; // Absolutely Restricted
+
+        if (requiredLevel === 'B') {
+          // Research Team AND Rank >= Assistant Manager (Daeri)
+          return department === '연구팀' && checkRank('대리');
+        }
+
+        if (requiredLevel === 'C') {
+          // (Research Team AND Rank >= Senior Staff) OR (Exploration Team AND Rank >= Manager)
+          const isResearchCondition = department === '연구팀' && checkRank('주임');
+          const isExplorationCondition = department === '현장탐사팀' && checkRank('과장');
+          return isResearchCondition || isExplorationCondition;
+        }
+
+        return true; // Level D or others are accessible
+      },
+
+      checkRank: (requiredRank: string) => {
+        const { rank } = get();
+        const RANK_PRIORITY: Record<string, number> = {
+          '과장': 4,
+          '대리': 3,
+          '주임': 2,
+          '사원': 1
+        };
+        const currentRankLevel = RANK_PRIORITY[rank] || 0;
+        const requiredRankLevel = RANK_PRIORITY[requiredRank] || 0;
+        return currentRankLevel >= requiredRankLevel;
       },
     }),
     {
@@ -217,3 +267,4 @@ export const useUserStore = create<UserState>()(
     }
   )
 );
+

@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import { manualData, getGradeColor, getStatusLabel, DarknessGrade, DarknessStatus } from '@/data/manualData';
+import { fetchManuals, getGradeColor, getStatusLabel, DarknessGrade, DarknessStatus, DarknessManualItem } from '@/data/manualData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +28,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, AlertTriangle, BookOpen, ChevronRight, Home } from 'lucide-react';
+import { Search, AlertTriangle, BookOpen, ChevronRight, Home, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const ManualList = () => {
@@ -36,22 +36,35 @@ const ManualList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [gradeFilter, setGradeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  
+
+  const [manuals, setManuals] = useState<DarknessManualItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   // Security Modal State
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const [pendingManualId, setPendingManualId] = useState<string | null>(null);
 
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      const data = await fetchManuals();
+      setManuals(data);
+      setIsLoading(false);
+    };
+    loadData();
+  }, []);
+
   const filteredData = useMemo(() => {
-    return manualData.filter(item => {
-      const matchesSearch = 
+    return manuals.filter(item => {
+      const matchesSearch =
         item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.title.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesGrade = gradeFilter === 'all' || item.grade === gradeFilter;
       const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
       return matchesSearch && matchesGrade && matchesStatus;
     });
-  }, [searchQuery, gradeFilter, statusFilter]);
+  }, [searchQuery, gradeFilter, statusFilter, manuals]);
 
   const handleRowClick = (id: string, isRestricted: boolean) => {
     if (isRestricted) {
@@ -147,7 +160,16 @@ const ManualList = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredData.length === 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-48 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      <p>데이터를 불러오는 중입니다...</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : filteredData.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
                     검색 결과가 없습니다.
@@ -161,8 +183,8 @@ const ManualList = () => {
                       key={item.id}
                       className={cn(
                         "cursor-pointer transition-colors",
-                        item.isRestricted 
-                          ? "hover:bg-red-500/5 border-l-2 border-l-red-500" 
+                        item.isRestricted
+                          ? "hover:bg-red-500/5 border-l-2 border-l-red-500"
                           : "hover:bg-secondary/50"
                       )}
                       onClick={() => handleRowClick(item.id, item.isRestricted)}
@@ -236,7 +258,7 @@ const ManualList = () => {
               </div>
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex items-center space-x-3 py-4 px-2">
             <Checkbox
               id="agree"
@@ -264,8 +286,8 @@ const ManualList = () => {
               disabled={!isAgreed}
               className={cn(
                 "transition-colors",
-                isAgreed 
-                  ? "bg-red-600 hover:bg-red-700 text-white" 
+                isAgreed
+                  ? "bg-red-600 hover:bg-red-700 text-white"
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
             >

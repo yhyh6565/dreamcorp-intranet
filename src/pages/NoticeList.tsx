@@ -63,7 +63,7 @@ const NoticeList = () => {
         <Card className="border-none shadow-md bg-white">
           <CardContent className="p-0">
             <div className="w-full text-sm text-left overflow-x-auto">
-              <div className="min-w-[600px]">
+              <div className="w-full">
                 {/* Table Header */}
                 <div className="flex items-center bg-slate-50 border-b border-border py-3 px-3 md:px-6 font-medium text-slate-500">
                   <div className="w-10 md:w-16 text-center shrink-0">번호</div>
@@ -100,7 +100,7 @@ const NoticeList = () => {
                             {notice.category}
                           </Badge>
                         </div>
-                        <div className={`flex-1 px-2 md:px-4 font-medium transition-colors truncate ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
+                        <div className={`flex-1 min-w-0 px-2 md:px-4 font-medium transition-colors truncate ${isPinned ? 'text-slate-900 font-semibold' : 'text-slate-700'} group-hover:text-primary`}>
                           {notice.title}
                         </div>
                         <div className="w-32 text-center text-slate-500 shrink-0 hidden md:block text-xs">
@@ -118,7 +118,7 @@ const NoticeList = () => {
                     <div key={`empty-${i}`} className="flex items-center py-3 px-3 md:px-6 opacity-40">
                       <div className="w-10 md:w-16 text-center text-slate-300 shrink-0 font-mono text-xs">-</div>
                       <div className="w-16 md:w-24 text-center shrink-0"></div>
-                      <div className="flex-1 px-2 md:px-4 text-slate-300"></div>
+                      <div className="flex-1 min-w-0 px-2 md:px-4 text-slate-300"></div>
                       <div className="w-32 text-center shrink-0 hidden md:block"></div>
                       <div className="w-24 text-center shrink-0"></div>
                     </div>

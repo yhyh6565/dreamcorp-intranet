@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ const LoginGateway = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'id' | 'password'>('id');
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, logout } = useUserStore();
 
   useEffect(() => {
@@ -31,7 +32,8 @@ const LoginGateway = () => {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     login(id);
-    navigate('/dashboard');
+    const from = location.state?.from?.pathname || '/dashboard';
+    navigate(from, { replace: true });
   };
 
   return (
@@ -69,7 +71,7 @@ const LoginGateway = () => {
                   <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">아이디</label>
                   <Input
                     type="text"
-                    placeholder="이름 또는 사원번호"
+                    placeholder="이름을 입력하세요"
                     value={id}
                     onChange={(e) => setId(e.target.value)}
                     className="h-14 bg-slate-50 border-slate-200 focus:border-primary focus:ring-primary/20 text-lg px-4 rounded-xl transition-all"

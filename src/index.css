@@ -6,8 +6,10 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 222 47% 11%; /* #0F172A Slate-900 */
+    --background: 0 0% 100%;
+    /* #FFFFFF */
+    --foreground: 222 47% 11%;
+    /* #0F172A Slate-900 */
 
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -15,14 +17,17 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 220 100% 50%; /* #0054FF Daydream Blue */
+    --primary: 220 100% 50%;
+    /* #0054FF Daydream Blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%; /* #F1F5F9 Slate-100ish for slight contrast */
+    --secondary: 210 40% 96.1%;
+    /* #F1F5F9 Slate-100ish for slight contrast */
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215 16% 47%; /* #64748B Slate-500 */
+    --muted-foreground: 215 16% 47%;
+    /* #64748B Slate-500 */
 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222 47% 11%;
@@ -30,9 +35,11 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%; /* Slate-200 */
+    --border: 214.3 31.8% 91.4%;
+    /* Slate-200 */
     --input: 214.3 31.8% 91.4%;
-    --ring: 220 100% 50%; /* Daydream Blue */
+    --ring: 220 100% 50%;
+    /* Daydream Blue */
 
     --radius: 0.5rem;
 
@@ -95,58 +102,159 @@
 
 /* Horror Animations */
 @keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
 }
 
 @keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
+
+  0%,
+  92% {
+    transform: translate(0);
+    opacity: 1;
+  }
+
+  93% {
+    transform: translate(-2px, 1px);
+    opacity: 0.8;
+  }
+
+  94% {
+    transform: translate(1px, -1px);
+    opacity: 1;
+  }
+
+  95% {
+    transform: translate(0);
+    opacity: 0.4;
+  }
+
+  96% {
+    transform: translate(0);
+    opacity: 1;
+  }
+
+  98% {
+    transform: translate(-1px, 0);
+  }
+
+  100% {
+    transform: translate(0);
+  }
 }
 
 @keyframes textFlicker {
-  0%, 100% { color: hsl(var(--horror-red)); }
-  50% { color: hsl(var(--horror-dark-red)); }
+
+  0%,
+  80%,
+  100% {
+    color: hsl(var(--horror-red));
+  }
+
+  85% {
+    color: hsl(var(--horror-dark-red));
+  }
+
+  90% {
+    color: transparent;
+  }
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-  20%, 40%, 60%, 80% { transform: translateX(2px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
+  }
 }
 
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 @keyframes blink {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0; }
+
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pointFlicker {
-  0%, 90%, 100% { color: hsl(var(--foreground)); }
-  95% { color: hsl(var(--destructive)); }
+
+  0%,
+  90%,
+  100% {
+    color: hsl(var(--foreground));
+  }
+
+  95% {
+    color: hsl(var(--destructive));
+  }
 }
 
 .animate-flicker {
@@ -154,7 +262,7 @@
 }
 
 .animate-glitch {
-  animation: glitch 0.3s ease-in-out infinite;
+  animation: glitch 3s ease-in-out infinite;
 }
 
 .animate-text-flicker {
@@ -203,4 +311,82 @@
 .noise-overlay {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   opacity: 0.1;
+}
+
+@media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+
+  /* 
+   * NUCLEAR PRINT RESET 
+   * Goal: Hide everything except the main content area and let it flow naturally.
+   */
+
+  /* 1. Hide everything by default at the root level */
+  body>* {
+    display: none !important;
+  }
+
+  /* 2. Only show the root app container */
+  body>#root {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* 3. Inside root, hide everything except main */
+  #root>* {
+    display: none !important;
+  }
+
+  /* 4. Show Main and reset its layout */
+  #root>main {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+    z-index: 9999 !important;
+  }
+
+  /* 5. Handle Radix ScrollArea - Unlock constraints */
+  [data-radix-scroll-area-viewport] {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  [data-radix-scroll-area-viewport]>div {
+    display: block !important;
+    height: auto !important;
+  }
+
+  /* 6. Cleanups */
+  button,
+  aside,
+  [role="dialog"],
+  .fixed,
+  .sticky {
+    display: none !important;
+  }
+
+  /* 7. Typography resets */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color: black !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  a[href]:after {
+    content: none !important;
+  }
 }

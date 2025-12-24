@@ -73,14 +73,14 @@ const ShadowAssignment = () => {
                 </div>
 
                 <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
-                    <Table className="min-w-[600px]">
+                    <Table className="w-full table-fixed">
                         <TableHeader className="bg-slate-50">
                             <TableRow>
-                                <TableHead className="w-[100px]">GRADE</TableHead>
-                                <TableHead>CODE</TableHead>
+                                <TableHead className="w-[80px]">GRADE</TableHead>
+                                <TableHead className="w-[100px]">CODE</TableHead>
                                 <TableHead>LOCATION</TableHead>
                                 <TableHead>NAME</TableHead>
-                                <TableHead className="text-right">ACTION</TableHead>
+                                <TableHead className="w-[70px] text-right">ACTION</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -101,13 +101,13 @@ const ShadowAssignment = () => {
                                                 {shadow.grade}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="font-mono font-medium text-slate-700">
+                                        <TableCell className="font-mono font-medium text-slate-700 truncate max-w-[100px]" title={shadow.code}>
                                             {shadow.code}
                                         </TableCell>
-                                        <TableCell className="text-slate-600">
+                                        <TableCell className="text-slate-600 truncate max-w-[120px]" title={shadow.locationText}>
                                             {shadow.locationText}
                                         </TableCell>
-                                        <TableCell className="font-bold text-slate-800">
+                                        <TableCell className="font-bold text-slate-800 truncate max-w-[100px]" title={shadow.name}>
                                             {shadow.name}
                                         </TableCell>
                                         <TableCell className="text-right">

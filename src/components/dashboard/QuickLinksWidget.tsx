@@ -12,13 +12,13 @@ import StorageRentalModal from '@/components/modals/StorageRentalModal';
 
 const QuickLinksWidget = () => {
     const navigate = useNavigate();
-    const { userName, rank } = useUserStore();
+    const { checkRank } = useUserStore();
     const [showAnnexVisit, setShowAnnexVisit] = useState(false);
     const [showFoxCounseling, setShowFoxCounseling] = useState(false);
     const [showStorageRental, setShowStorageRental] = useState(false);
 
-    // Logic: Provide access if user is in the predefined list (Special 13) AND rank is NOT '사원'
-    const hasPrivilegedAccess = PREDEFINED_USERS.hasOwnProperty(userName) && rank !== '사원';
+    // Logic: Special Authority (Privileged) if Rank is '대리' (Assistant Manager) or higher.
+    const hasPrivilegedAccess = checkRank('대리');
 
     const quickLinks = [
         {

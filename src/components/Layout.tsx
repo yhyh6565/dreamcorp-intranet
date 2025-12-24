@@ -34,7 +34,7 @@ const SidebarContent = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userName, rank, team, employeeId, points, logout, securityMessageTriggered, isNavigationDisabled, isSecurityMessageRead } = useUserStore();
+  const { userName, rank, team, department, employeeId, points, logout, securityMessageTriggered, isNavigationDisabled, isSecurityMessageRead } = useUserStore();
 
   const handleLogout = () => {
     logout();
@@ -159,7 +159,7 @@ const SidebarContent = ({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{userName} {rank}</p>
-                <p className="text-xs text-muted-foreground truncate">{team}</p>
+                <p className="text-xs text-muted-foreground truncate">{department} {team}</p>
               </div>
             </div>
             <div className="bg-secondary/50 rounded-lg p-3 mb-3">
@@ -188,7 +188,7 @@ const SidebarContent = ({
                 </TooltipTrigger>
                 <TooltipContent side="right" className="ml-2 mb-2 p-3 min-w-[150px]">
                   <p className="font-bold">{userName} {rank}</p>
-                  <p className="text-xs text-muted-foreground">{team}</p>
+                  <p className="text-xs text-muted-foreground">{department} {team}</p>
 
                   <div className="flex justify-between text-xs border-t border-slate-700 pt-2 mt-1">
                     <span>Points</span>
