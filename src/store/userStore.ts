@@ -10,6 +10,7 @@ interface UserState {
   employeeId: string;
   points: number;
   isLoggedIn: boolean;
+  isGuest: boolean;
   hasWelfareMallAccess: boolean;
   welfareMallLoginId: string;
   welfareMallHiddenAccess: boolean;
@@ -19,6 +20,7 @@ interface UserState {
   isNavigationDisabled: boolean;
 
   login: (id: string) => void;
+  loginAsGuest: () => void;
   logout: () => void;
   loginToWelfareMall: (id: string, password: string) => boolean;
   deductPoints: (amount: number) => void;
@@ -88,6 +90,7 @@ export const useUserStore = create<UserState>()(
       employeeId: '',
       points: 15400,
       isLoggedIn: false,
+      isGuest: false,
       hasWelfareMallAccess: false,
       welfareMallLoginId: '',
       welfareMallHiddenAccess: false,
@@ -107,6 +110,7 @@ export const useUserStore = create<UserState>()(
             employeeId: '',
             points: user.points,
             isLoggedIn: true,
+            isGuest: false,
           });
         } else {
           set({
@@ -117,8 +121,23 @@ export const useUserStore = create<UserState>()(
             employeeId: generateRandomEmployeeId(),
             points: 520,
             isLoggedIn: true,
+            isGuest: false,
           });
         }
+      },
+
+      loginAsGuest: () => {
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        set({
+          userName: `방문자_${randomNum}`,
+          department: '외부인',
+          team: '방문객',
+          rank: '게스트',
+          employeeId: `GUEST-${randomNum}`,
+          points: 0,
+          isLoggedIn: true,
+          isGuest: true,
+        });
       },
 
       logout: () => {
@@ -129,6 +148,7 @@ export const useUserStore = create<UserState>()(
           rank: '',
           employeeId: '',
           isLoggedIn: false,
+          isGuest: false,
           hasWelfareMallAccess: false,
           welfareMallLoginId: '',
           welfareMallHiddenAccess: false,

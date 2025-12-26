@@ -12,8 +12,11 @@ import WelfareLoginModal from '@/components/welfare/WelfareLoginModal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TypewriterText } from '@/components/common/TypewriterText';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
+import { useGuestGuard } from '@/hooks/useGuestGuard';
 
 const WelfareMall = () => {
+  const { toast } = useToast();
   const navigate = useNavigate();
   const {
     isLoggedIn,
@@ -29,6 +32,7 @@ const WelfareMall = () => {
     points,
     deductPoints
   } = useUserStore();
+  const { isGuest, requireAuth } = useGuestGuard();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSpaceMall, setShowSpaceMall] = useState(false);
@@ -41,10 +45,13 @@ const WelfareMall = () => {
   useEffect(() => {
     if (!isLoggedIn) {
       navigate('/');
+    } else if (isGuest) {
+      requireAuth("복지몰을 이용할 수 없습니다.");
+      navigate('/dashboard');
     } else if (!hasWelfareMallAccess) {
       setShowLoginModal(true);
     }
-  }, [isLoggedIn, hasWelfareMallAccess, navigate]);
+  }, [isLoggedIn, isGuest, hasWelfareMallAccess, navigate, requireAuth]);
 
   // Points logic (Sync with store + Glitch)
   useEffect(() => {

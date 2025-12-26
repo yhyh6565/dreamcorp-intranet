@@ -2,11 +2,34 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Bell, ChevronRight } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
 
 import { notices as allNotices } from '@/data/notices';
 
 const NoticeWidget = () => {
     const navigate = useNavigate();
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [itemCount, setItemCount] = useState(4);
+
+    // Dynamic height calculation
+    useEffect(() => {
+        const updateCount = () => {
+            if (!containerRef.current) return;
+            const height = containerRef.current.clientHeight;
+            // Approximate height per item (padding + text + border) ~ 50px
+            // We subtract a little buffer to prevent partial cutoffs
+            const calculated = Math.floor(height / 52);
+            setItemCount(Math.max(4, calculated));
+        };
+
+        const observer = new ResizeObserver(updateCount);
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+            updateCount(); // Initial check
+        }
+
+        return () => observer.disconnect();
+    }, []);
 
     // Sort: Important/Emergency first, then Date descending
     const displayNotices = [...allNotices].sort((a, b) => {
@@ -15,19 +38,15 @@ const NoticeWidget = () => {
 
         if (isAPinned !== isBPinned) return isAPinned ? -1 : 1;
         return a.date < b.date ? 1 : -1; // String comparison works for YYYY.MM.DD
-    }).slice(0, 4);
+    }).slice(0, itemCount);
 
     const handleNoticeClick = (index: number) => {
-        // Find original index or just navigate to list. detailed navigation requires ID.
-        // Dashboard usually links to detail by ID?
-        // The original code used `navigate('/notices/${index + 1}')`. The IDs in data are '1', '2', '3', '100'.
-        // So I should use `notice.id`.
         navigate(`/notices/${displayNotices[index].id}`);
     };
 
     return (
         <Card className="md:col-span-3 border-none shadow-md bg-white h-full flex flex-col">
-            <CardHeader className="border-b border-slate-50 pb-4">
+            <CardHeader className="border-b border-slate-50 pb-4 shrink-0">
                 <div
                     className="flex items-center justify-between cursor-pointer group"
                     onClick={() => navigate('/notices')}
@@ -41,30 +60,33 @@ const NoticeWidget = () => {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="p-0 flex-1">
-                <ul className="divide-y divide-slate-50">
-                    {displayNotices.map((notice, index) => {
-                        const isPinned = notice.isImportant || notice.title.includes('[긴급]') || notice.title.includes('[필독]');
-                        const isRedBadge = notice.category === '보안' || notice.category === '현장' || isPinned;
+            <CardContent className="p-0 flex-1 min-h-0 relative">
+                <div ref={containerRef} className="absolute inset-0 overflow-hidden">
+                    <ul className="divide-y divide-slate-50">
+                        {displayNotices.map((notice, index) => {
+                            const isPinned = notice.isImportant || notice.title.includes('[긴급]') || notice.title.includes('[필독]');
+                            const isRedBadge = notice.category === '보안' || notice.category === '현장' || isPinned;
 
-                        return (
-                            <li
-                                key={notice.id}
-                                onClick={() => handleNoticeClick(index)}
-                                className={`flex items-center justify-between py-3 px-4 cursor-pointer hover:bg-slate-50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3 overflow-hidden">
-                                    <Badge variant="secondary" className={`text-xs font-normal shrink-0 ${isRedBadge ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'}`}>
-                                        {notice.category}
-                                    </Badge>
-                                    <span className="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors truncate">{notice.title}</span>
-                                </div>
-                                <span className="text-xs text-slate-400 shrink-0 ml-2">{notice.date}</span>
-                            </li>
-                        )
-                    })}
-                </ul>
+                            return (
+                                <li
+                                    key={notice.id}
+                                    onClick={() => handleNoticeClick(index)}
+                                    className={`flex items-center justify-between py-3 px-4 cursor-pointer hover:bg-slate-50 transition-colors group ${notice.isHorror ? 'hover:bg-red-50/50' : ''
+                                        }`}
+                                    style={{ height: '52px' }}
+                                >
+                                    <div className="flex items-center gap-3 overflow-hidden">
+                                        <Badge variant="secondary" className={`text-xs font-normal shrink-0 ${isRedBadge ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'}`}>
+                                            {notice.category}
+                                        </Badge>
+                                        <span className="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors truncate">{notice.title}</span>
+                                    </div>
+                                    <span className="text-xs text-slate-400 shrink-0 ml-2">{notice.date}</span>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
             </CardContent>
         </Card>
     );

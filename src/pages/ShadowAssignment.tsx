@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ShieldAlert, CheckCircle2 } from 'lucide-react';
 import ShadowAssignmentModal from '@/components/modals/ShadowAssignmentModal';
+import { useGuestGuard } from '@/hooks/useGuestGuard';
 import { useToast } from '@/hooks/use-toast';
 import Layout from '@/components/Layout';
 import IdentityVerificationFailedModal from '@/components/modals/IdentityVerificationFailedModal';
@@ -14,6 +15,7 @@ const ShadowAssignment = () => {
     const { shadows, assignShadow } = useShadowStore();
     const { userName, team } = useUserStore();
     const { toast } = useToast();
+    const { requireAuth } = useGuestGuard();
 
     const [selectedShadow, setSelectedShadow] = useState<ShadowEntity | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +29,8 @@ const ShadowAssignment = () => {
             setIsFailModalOpen(true);
             return;
         }
+        if (!requireAuth("관리물 담당자로 등록할 수 없습니다.")) return;
+
         setSelectedShadow(shadow);
         setIsModalOpen(true);
     };
@@ -78,8 +82,8 @@ const ShadowAssignment = () => {
                             <TableRow>
                                 <TableHead className="w-[50px] md:w-[80px]">GRADE</TableHead>
                                 <TableHead className="w-[80px] md:w-[100px]">CODE</TableHead>
-                                <TableHead className="hidden md:table-cell">LOCATION</TableHead>
-                                <TableHead>NAME</TableHead>
+                                <TableHead className="hidden md:table-cell md:w-[250px]">LOCATION</TableHead>
+                                <TableHead className="w-[200px] md:w-[300px]">NAME</TableHead>
                                 <TableHead className="w-[60px] md:w-[70px] text-right">ACTION</TableHead>
                             </TableRow>
                         </TableHeader>

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Building2, Cat, Archive, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useGuestGuard } from '@/hooks/useGuestGuard';
 
 import AnnexVisitModal from '@/components/modals/AnnexVisitModal';
 import FoxCounselingModal from '@/components/modals/FoxCounselingModal';
@@ -13,6 +14,7 @@ import StorageRentalModal from '@/components/modals/StorageRentalModal';
 const QuickLinksWidget = () => {
     const navigate = useNavigate();
     const { checkRank } = useUserStore();
+    const { requireAuth } = useGuestGuard();
     const [showAnnexVisit, setShowAnnexVisit] = useState(false);
     const [showFoxCounseling, setShowFoxCounseling] = useState(false);
     const [showStorageRental, setShowStorageRental] = useState(false);
@@ -24,7 +26,10 @@ const QuickLinksWidget = () => {
         {
             icon: Building2,
             label: '별관 방문',
-            action: () => setShowAnnexVisit(true),
+            action: () => {
+                if (!requireAuth("별관 방문 신청을 할 수 없습니다.")) return;
+                setShowAnnexVisit(true);
+            },
             color: 'text-purple-600',
             bgColor: 'bg-purple-100',
             visible: true
